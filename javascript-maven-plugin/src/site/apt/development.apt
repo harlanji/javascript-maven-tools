@@ -1,0 +1,96 @@
+                                    ------
+                        Javascript development with maven
+                                    ------
+                                Nicolas De Loof
+                                    ------
+                                 Oct 02, 2007
+
+Javascript development with maven
+
+* Why use maven for Javascript ?
+
+  Javascript is a ... script language. It does not require compilation neither
+  packaging to be released. This doesn't mean developping a javascript library
+  does not require some tooling.
+
+  Javascript developers have created nice tools, like jsunit or jsdocs to
+  get a productive and controlled development environment. They also use
+  dedicated libraires like log4javascript for development purpose, split code
+  into fine grained scripts and use some assembly tools to create the released
+  scripts.
+
+  The Javascript maven plugin integrates those tools and provide a maven
+  packaging with a dedicated lifecycle.
+
+* Assembly
+
+  Many javascript libraries are built based on a set of simple source scripts,
+  dedicated to a particular scope. In many case, using an object orientend
+  javascript style, every javascript class has it's own source file.
+
+  The javascript developper don't want to make web developers life complicate
+  and package there code into single scripts, or use-case related scripts, so
+  that only one <<<script>>> import in HTML pages is required to get the
+  library.
+
+  Assembling the source scripts can be handled by the javascript maven plugin,
+  either via it's native XML format, or using a
+  {{{http://code.google.com/p/js-builder}jsbuilder}} assembly file. To
+  avoid confusion with the
+  {{{http://maven.apache.org/plugins/maven-assembly-plugin}maven-assembly-plugin}},
+  such files are called "assembler descriptors".
+
+  A typical assembler looks like this :
+
+--------------------------
+<?xml version="1.0"?>
+<assembler>
+  <scripts>
+    <script>
+      <fileName>prototype.js</fileName>
+      <includes>
+        <include>builder.js</include>
+        <include>controls.js</include>
+        <include>dragdrop.js</include>
+        <include>effects.js</include>
+        <include>global.js</include>
+        <include>slider.js</include>
+      </includes>
+    </script>
+  </scripts>
+</assembler>
+--------------------------
+
+* Strip debuging code
+
+  Coding javascript is difficult due to the lack of compiler to check the code,
+  and fiew debuggers availables. Many developers use debuging code, for example
+  based on the {{{http://www.timdown.co.uk/log4javascript}log4javascript}}
+  library.
+
+  In some case a production-mode is considered and disables debugs. For example,
+  the log4javascript library comes with a stub version that does nothing. The
+  javascript-maven-plugin offers an alternative solution with the strip-debugs
+  goal. This goal removes all lines from the packaged scripts that start with a
+  special token, by default ";;;". This will remove from the following sample
+  all references to log4javascript :
+
+--------------------------
+;;; var logger = log4javascript.getDefaultLogger();
+
+    var format = function( n, format )
+    {
+;;;     logger.debug( "format " + n + " as " + format );
+        if( isNaN(n) ) return "-";
+        ....
+--------------------------
+
+* Compress the scripts
+
+  The compress goal is used to compress web application scripts before packaging
+  a web application. The compressor used is configurable, with support for
+  {{{http://www.crockford.com/javascript/jsmin.html}JsMin}},
+  and {{{http://dojotoolkit.org/docs/shrinksafe}Dojo Shrinksafe}}.
+
+  The compress-attached goal is for pure javascript developers purpose. It
+  creates a second artifact for the javascript library with compressed scripts.

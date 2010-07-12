@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<assembler>
+  <scripts>
+    <script>
+      <fileName>prototype.js</fileName>
+      <includes>
+        <include>builder.js</include>
+        <include>controls.js</include>
+        <include>dragdrop.js</include>
+        <include>effects.js</include>
+        <include>global.js</include>
+        <include>slider.js</include>
+      </includes>
+    </script>
+  </scripts>
+</assembler>

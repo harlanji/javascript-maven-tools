@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<!--
+
+  A demonstration project that uses maven to build and package the prototype library.
+
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.prototypejs</groupId>
+  <artifactId>prototype</artifactId>
+  <packaging>javascript</packaging>
+  <version>1.5.1.1-SNAPSHOT</version>
+
+  <build>
+
+    <outputDirectory>target/scripts</outputDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo.javascript</groupId>
+        <artifactId>javascript-maven-plugin</artifactId>
+        <version>@pom.version@</version>
+        <extensions>true</extensions>
+        <configuration>
+          <descriptor>${basedir}/src/assembler/prototype.xml</descriptor>
+        </configuration>
+        <executions>
+          <execution>
+            <id>compress</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-compressed</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,119 @@
+ ------
+ Guide to Developing Javascript libraries with Maven 2
+ ------
+ Nicolas De Loof
+ ------
+
+Guide to Developing Javascript libraries with Maven 2
+
+* Introduction
+
+ This guide is intended to assist users in developing Javascript librairies as
+ Maven 2 projects.
+
+** Conventions
+
+ The maven javascript tool set use the following conventions for directory
+ structure. This is only a standard layout, not a requirement, but will keep
+ your POM files as simple as possible.
+
++----+
+  <project-root>/
+  |
+  +- pom.xml
+  |
+  +- src/
+  |  |
+  |  +- main/
+  |  |  |
+  |  |  +- javascript/ (source location for Scripts)
+  |  |  +- resources/ (source location for any static resources)
+  |  |
+  |  +- test/
+  |  |  |
+  |  |  +- javascript/ (source location for (jsunit) test sources)
+  |  |
+  ...
++----+
+
+** Project Definition
+
+ Your project must configure some extentions to the maven base to enable the
+ javascript support:
+
++----+
+<project>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany</groupId>
+  <artifactId>myexample</artifactId>
+  <packaging>javascript</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>My example Javascript project</name>
+
+  <build>
+    <outputDirectory>target/scripts</outputDirectory>
+    <testOutputDirectory>target/test-scripts</testOutputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo.javascript</groupId>
+        <artifactId>javascript-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
++----+
+
+  Please note you have to setup javascript-maven-plugin both:
+
+  - as a maven extension to get a javascript dedicated lifecycle
+
+  - as a plugin with <<<\<extensions\>true\</extensions\>>>> to handle javascript
+    dependencies
+
+  Once you have your pom setup then you can build the module in the normal way
+  via:
+
+----
+mvn install
+----
+
+** Project life cycle
+
+ Maven will take your source scripts and assemble them following an optional
+ descriptor. The descriptor can either be written via the plugin native XML
+ format, or using a {{{http://code.google.com/p/js-builder}jsbuilder}} file. All
+ non listed scripts will simply be copied to the packaging directory.
+
+ You can take advantage of other javascript librairies to make your code
+ simplier or cleaner. Simply declare a dependency of type <<<javascript>>> and
+ maven will download the associated javascript archive.
+
++----+
+  <dependencies>
+    <dependency>
+      <groupId>org.prototypejs</groupId>
+      <artifactId>prototype</artifactId>
+      <version>1.5.1.1</version>
+      <type>javascript</type>
+    </dependency>
+  </dependencies>
++----+
+
+ You can unit test your scripts by including {{{http://www.jsunit.net}jsUnit}}
+ tests. Tests, source scripts and dependencies will be copied in a working
+ directory before running the test suite.
+
+ Finally, maven will package your scripts as a javascript arcive to get deployed
+ in your maven repository. Optionally, you can create a compressed version of
+ your scripts, to distribute a lightweight version of your project to non-maven
+ users.
+
+** Project documentation
+
+ You can document your code by following the {{{http://www.jsdoctoolkit.org}jsDoc}}
+ conventions, very similar to javadoc.
+
+ Maven can also run {{{http://www.jslint.com}jslint}} on your project to check
+ code quality.

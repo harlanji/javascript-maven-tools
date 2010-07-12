@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2006-2007 the original author or authors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<document>
+    <properties>
+        <title>Javascript Maven 2 Tools</title>
+        <author email="nicoals.deloof@gmail.com">Nicolas De Loof</author>
+    </properties>
+    <body>
+        <section name="Introduction">
+            <img src="images/javascript-maven-logo.png" align="right" vspace="4" hspace="4" clear="all"/>
+            <p>
+  Javascript has been considered for long time to be a hack language for web
+  pages, with lack of object orientation and too lazy syntax. Recent explosion
+  of ajax "web 2.0" rich internet application demonstrates that javascript is
+  a mature platform, with powerfull libraries and talentuous developers.
+            </p>
+
+            <p>
+  Java development uses tools like Ant and Maven to handle project lifecycle and
+  integrate build, documentation and reporting tools. Javascript also has
+  various tools, but no real consensus on how to manage a javascript project.
+  In particular, javascript development as part of a JEE web application should
+  integrate well with exiting java tools.
+            </p>
+
+      <p>
+  The javascript maven project provides maven plugins and extensions dedicated to
+  javascript development, either as standalone pure javascript librairies or as
+  part of web application. Its goal is to promote best development practices with
+  a standardized project organization, so that developers can be quickly productive
+  on a project and take advantage of the best tools available for javascript development,
+  documentation or quality assurance.
+      </p>
+
+            <subsection name="Guides">
+                <ul>
+                    <li><a href="guide-javascript-development.html">Developing javascript projects with Maven 2 </a>:
+                        A guide to developing Javascript librairies with Maven 2 support.</li>
+
+                    <li><a href="guide-webapp-development.html">Developing web appplication with javascript </a>:
+                        A guide to enhance Java web application development based on existing maven tools
+                        with Maven javascript support.</li>
+                </ul>
+            </subsection>
+
+            <subsection name="Maven Components">
+                <ul>
+                    <li><a href="javascript-maven-plugin/index.html">JavaScript Maven Plugin</a>:
+                        Provides support for packaging, testing and other facets of JavaScript development.</li>
+
+                    <li><a href="javascript-report-maven-plugin/index.html">JavaScript Report Maven Plugin</a>:
+                        Reporting plugin for javascript documentation and quality assurance tools.</li>
+
+                    <li><a href="javascript-maven-extension/index.html">JavaScript Maven Extensions</a>:
+                        A set of maven extension to support Javascript development lifecycle.</li>
+
+                    <li><a href="javascript-maven-archive/index.html">JavaScript Maven Archive</a>:
+                        A set of maven components to support Javascript archives.</li>
+
+                </ul>
+            </subsection>
+        </section>
+    </body>
+</document>

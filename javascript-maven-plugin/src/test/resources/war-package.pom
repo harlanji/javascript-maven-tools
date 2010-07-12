@@ -1,0 +1,20 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javascript-maven-plugin</artifactId>
+        <configuration>
+          <project implementation="org.codehaus.mojo.javascript.stub.MavenProjectStub">
+            <artifactId>test</artifactId>
+          </project>
+          <sourceDirectory>src/test/resources/scripts</sourceDirectory>
+          <webappDirectory>${basedir}/target/test-target/war-package</webappDirectory>
+          <scriptsDirectory>scripts</scriptsDirectory>
+          <libsDirectory>lib</libsDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

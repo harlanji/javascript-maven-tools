@@ -1,0 +1,51 @@
+ ------
+ Introduction
+ ------
+ Nicolas De Loof
+ ------
+ 02 Oct 2007
+ ------
+
+
+Maven Javascript Plugin
+
+  Maven javascript plugin aims to provide a project lifecycle similar to the
+  one used by java projects, and to integrate with java war projects.
+
+* Goals Overview
+
+  For web application developers :
+
+  * {{{copy-dependencies-mojo.html}javascript:copy-dependencies}} handles
+  javascript dependencies and unpack them to your script directory.
+
+  * {{{compile-mojo.html}javascript:compile}} prepares your scripts to get packaged
+  in the web application. An XML descriptor can be used to configure some scripts
+  to get merged into a new file.
+
+  * {{{inplace-mojo.html}javascript:inplace}} unpack javascript dependencies to
+  your web application source, to enable quick development with servlet
+  containers that don't require a packaging phase.
+
+  * {{{compress-mojo.html}javascript:compress}} use a configurable javascript
+  compressor to reduce the weight of js files. Optionnaly also strip all debugging
+  code from the scripts before packaging, by removing all lines that start with
+  a special token (";;;" for example).
+
+  For javascripts developers :
+
+  * {{{package-mojo.html}javascript:package}} pack a maven based javascript
+  library as a javascript archive to get installed/deployed in the repository.
+
+  * {{{attach-compressed-mojo.html}javascript:attach-compressed}} pack a javascript
+  archive with compressed version of the library scripts.
+
+
+* Usage
+
+  Instructions on how to use the Maven Javascript Plugin can be found
+  {{{development.html}here}}.
+
+  The plugin can handle javascript libraries as maven
+  {{{javascript-dependencies.html}dependencies}}
+

@@ -1,0 +1,56 @@
+                                    ------
+                             Javascript Dependencies
+                                    ------
+                                Nicolas De Loof
+                                    ------
+                                 Oct 02, 2007
+
+Javascript Dependencies
+
+* Why Javascript Archives ?
+
+  Storing javascripts in a maven repo has many options :
+
+  1. Store as ".js", that is fine for one-file-libraries like prototype, but not
+     adequate for modulars one like scriptaculous, yahooUI, dojo...
+
+  2. Store as a jar of .js scripts. To avoid conflict with classpath jars, use
+     a custom dependency type '''javascript'''.
+
+  3. Store as a war. This has the advantage to integrate with the war plugin
+     overlay without any more work required, and to allow not only javascripts
+     but also static ressources like images and css. This has the side effect
+     that the js dependencies is tied to web application development and cannot
+     be used for pure javascript devs. This also has the side effect that the
+     war plugin requires a WEB-INF/web.xml to exist, and the js files to be
+     placed into a standardized folder, like "scripts", that is not
+     configurable.
+
+  The javascript plugin makes the choice of option 2, providing the necessary
+  support for a new archive format (dependency downloading, pack and unpack...).
+
+
+* How to use then ?
+
+  Simply declare dependencies of type "javascript" as you do with java
+  dependencies. The javascript plugin MUST be declared as an extension in your
+  POM.xml to register this type and allow maven to download them from
+  repositories.
+
+-------------------
+<project>
+  ...
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>maven-javascript-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+-------------------
+
+  Don't forget the <<<extensions>>> elements !
+

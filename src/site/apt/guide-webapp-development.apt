@@ -1,0 +1,115 @@
+ ------
+ Guide to Developing Javascript in a web application
+ ------
+ Nicolas De Loof
+ ------
+
+Guide to Developing Javascript in a web application using Maven 2
+
+* Introduction
+
+ This guide is intended to assist users to support Javascript development in a
+ Maven 2 war projects.
+
+** Conventions
+
+ The maven javascript tool set use the following conventions for directory
+ structure. This is only a standard layout, not a requirement, but will keep
+ your POM files as simple as possible.
+
++----+
+  <project-root>/
+  |
+  +- pom.xml
+  |
+  +- src/
+  |  |
+  |  +- main/
+  |  |  |
+  |  |  +- javascript/ (source location for Scripts)
+  |  |
+  |  +- test/
+  |  |  |
+  |  |  +- javascript/ (source location for (jsunit) test sources)
+  |  |
+  ...
++----+
+
+** Project Definition
+
+ Your project must configure some extentions to the maven base to enable the
+ javascript support. You must also setup the javascript plugin to run  during
+ the standard WAR lifecycle :
+
++----+
+<project>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany</groupId>
+  <artifactId>myexample</artifactId>
+  <packaging>javascript</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>My example Javascript project</name>
+
+  <build>
+    <outputDirectory>target/scripts</outputDirectory>
+    <testOutputDirectory>target/test-scripts</testOutputDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo.javascript</groupId>
+        <artifactId>javascript-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>war-package</goal>
+                    <goal>prepare-tests</goal>
+                    <goal>jsunit</goal>
+                    <goal>compress</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
++----+
+
+  The javascript-maven-plugin handle javascript libraries as project
+  dependencies, when dependency type is set to <<<javascript>>>.
+  Don't forget the <<<\<extensions\>true\</extensions\>>>> element
+  to enable this feature.
+
+  Once you have your pom setup then you can build the webapp in the normal way
+  via:
+
+----
+mvn install
+----
+
+** Development version vs release
+
+  During developement, you may want to keep your code readable and get most
+  documentation and debug from the scripts that are executed. When your project
+  gets released, you also want to compress scripts to make the javascript-based
+  application quicker.
+
+  There is two options to support both use cases.
+
+  [[1]] Configure a profile for release.
+
+  You can configure a dedicated profile for release that will declare the
+  "compress" javascript Mojo. This will reduce the size of your scripts and
+  javascript libraries.
+
+  [[2]] Use the inplace Mojo with a lightweight servlet engine
+
+  The Inplace Mojo can be used to prepare the (uncompressed) javascript
+  application in your webapplication source directory. This can be used to run
+  the webapp with the
+  {{{http://www.mortbay.org/maven-plugin/index.html}maven jetty plugin}}.
+  In such a case, don't forget to exclude the src/main/webapp/sripts folder
+  to be managed by your SCM (using <<<.cvsignore>>> file or <<<svn:ignore>>>
+  property).
+

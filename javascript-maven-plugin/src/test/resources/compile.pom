@@ -1,0 +1,16 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javascript-maven-plugin</artifactId>
+        <configuration>
+          <sourceDirectory>src/test/resources/scripts</sourceDirectory>
+          <outputDirectory>target/test-target/compile</outputDirectory>
+          <descriptor>src/test/resources/assembler.xml</descriptor>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

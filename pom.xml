@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2006-2007 Nicolas De Loof.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>mojo-sandbox</artifactId>
+    <version>5-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.mojo.javascript</groupId>
+  <artifactId>javascript-maven-tools</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven tools for JavaScript developers</name>
+  <version>1.0-alpha-1-SNAPSHOT</version>
+  <url>http://mojo.codehaus.org/javascript-maven-tools</url>
+
+  <description>
+      A set of tools to bring maven support to JavaScript developpers.
+  </description>
+    
+  <licenses>
+    <license>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>Apache 2.0</name>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>    
+
+  <modules>
+    <module>javascript-maven-archive</module>
+    <module>javascript-compressor</module>
+    <module>javascript-maven-plugin</module>
+    <module>javascript-report-maven-plugin</module>
+  </modules>
+
+  <developers>
+    <developer>
+      <id>ndeloof</id>
+      <email>nicolas.deloof@gmail.com</email>
+      <timezone>+1</timezone>
+      <url>http://blof.loof.fr</url>
+    </developer>
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Harlan Iverson</name>
+      <url>http://blog.devspan.com</url>
+    </contributor>
+  </contributors>
+    
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/javascript-maven-tools</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/javascript-maven-tools</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/trunk/sandbox/javascript-maven-tools</url>
+  </scm>    
+  <repositories>
+    <repository>
+      <id>codehaus.org</id>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>http://snapshots.repository.codehaus.org</url>
+    </repository>
+  </repositories>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.5.9</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.2</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

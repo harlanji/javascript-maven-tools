@@ -1,0 +1,17 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javascript-maven-plugin</artifactId>
+        <configuration>
+          <webappDirectory>${basedir}/target/test-target</webappDirectory>
+          <scripts>strip-debugs</scripts>
+          <strip>;;;</strip>
+          <compressor>jsmin</compressor>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+

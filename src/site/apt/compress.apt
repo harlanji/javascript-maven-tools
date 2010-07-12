@@ -1,0 +1,34 @@
+ ------
+ Javascript Compression
+ ------
+ Nicolas De Loof
+ ------
+
+Javascript Compression
+
+* Introduction
+
+ Javascript debuging may be really hard, so nice code formatting and comments 
+ is required for productive development. On the other side, application with
+ many scripts will get bad performance until the scripts are reduced to minimal
+ size, due to the in memory interpreted nature of javascript.
+
+** Compression tools
+
+ There is many compression engines for Javascript 
+ 
+ * {{{http://crockford.com/javascript/jsmin}Douglas Crockford's JSMIN}}
+ 
+ * {{{http://dojotoolkit.org/docs/shrinksafe}Dojo "shrinksafe" compressor}}
+ 
+ * {{{http://dean.edwards.name/packer/}Dean Edwards' Packer}}
+ 
+ * {{{http://developer.yahoo.com/yui/compressor/}YahooUI! compressor}}
+
+** Maven plugin support
+
+ As part of the war packaging phase, the javascript-maven-plugin can compress
+ all scripts using one of those compressor (Packer is not yet supported). You
+ may configure this in a profile so that the development application uses fully
+ formatted and commented scripts for easy debugging, and the testing / production 
+ application uses compressed ones.

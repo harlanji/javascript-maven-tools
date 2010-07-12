@@ -1,0 +1,22 @@
+<document>
+  <properties>
+    <title>Javascript maven tools</title>
+    <author email="nicolas.deloof@gmail.com">Nicolas De Loof</author>
+  </properties>
+  <body>
+    <release version="0.1" date="2007-10-09" description="Plugin imported into Mojo sandbox">
+      <action dev="ndeloof" type="add">
+        Dojo ShrinkSafe is now a supported javascript compressor.
+      </action>
+      <action dev="ndeloof" type="add">
+        Define assembler descriptor to "compile" (merge) scripts.
+      </action>
+      <action dev="ndeloof" type="add">
+        JsMin as default javascript compressor.
+      </action>
+      <action dev="ndeloof" type="add">
+        Support for javascript dependencies.
+      </action>	  
+    </release>
+  </body>
+</document>

@@ -1,0 +1,20 @@
+<html>
+<head>
+<script type='text/javascript' src='app/jsUnitCore.js'></script>
+<script type='text/javascript' src='lib/prototype.js'></script>
+<script type='text/javascript' src='lib/log4javascript.js'></script>
+<script type='text/javascript' src='Hello.js'></script>
+</head>
+<body>
+<div id="hello"></div>
+<script type='text/javascript'>
+
+function testSayHello()
+{
+   var world = new Hello( "world" );
+   assertEquals( world.sayHello(), "hello world" );
+}
+
+</script>
+</body>
+</html>

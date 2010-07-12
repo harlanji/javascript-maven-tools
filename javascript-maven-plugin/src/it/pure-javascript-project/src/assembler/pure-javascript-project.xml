@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<assembler>
+  <scripts>
+    <script>
+      <fileName>assembled.js</fileName>
+      <includes>
+        <include>One.js</include>
+        <include>Two.js</include>
+      </includes>
+    </script>
+  </scripts>
+</assembler>
