@@ -127,6 +127,11 @@
               </goals>
               <settingsFile>src/it/settings.xml</settingsFile>
               <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+
+				<properties>
+					<javascript.jsunit.firefox.path>${javascript.jsunit.firefox.path}</javascript.jsunit.firefox.path>
+				</properties>
+
             </configuration>
             <executions>
               <execution>
