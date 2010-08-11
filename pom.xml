@@ -56,19 +56,21 @@
       <timezone>+1</timezone>
       <url>http://blof.loof.fr</url>
     </developer>
-  </developers>
-  <contributors>
-    <contributor>
-      <name>Harlan Iverson</name>
+	<developer>
+      <id>harlanji</id>
+      <email>h.iverson@gmail.com</email>
+      <timezone>-6</timezone>
       <url>http://blog.devspan.com</url>
-    </contributor>
-  </contributors>
+    </developer>
+  </developers>
 
+    
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/javascript-maven-tools</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/javascript-maven-tools</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/sandbox/javascript-maven-tools</url>
-  </scm>
+	<connection>scm:git:git://github.com/harlanji/javascript-maven-tools.git</connection>
+	<developerConnection>scm:git:git://github.com/harlanji/javascript-maven-tools.git</developerConnection>
+	<url>http://github.com/harlanji/javascript-maven-tools</url>
+  </scm>    
+
   <repositories>
     <repository>
       <id>codehaus.org</id>
