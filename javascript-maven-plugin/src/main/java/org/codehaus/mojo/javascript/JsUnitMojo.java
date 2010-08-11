@@ -85,7 +85,7 @@ public class JsUnitMojo
     /**
      * Base directory for jsunit test.
      * 
-     * @parameter expression="${basedir}/src/test/javascript"
+     * @parameter expression="${basedir}/src/test/javascript/jsunit"
      */
     private File testSourceDirectory;
 
