@@ -45,7 +45,6 @@
 
   <modules>
     <module>javascript-maven-archive</module>
-    <module>javascript-compressor</module>
     <module>javascript-maven-plugin</module>
     <module>javascript-report-maven-plugin</module>
   </modules>
@@ -64,12 +63,12 @@
       <url>http://blog.devspan.com</url>
     </contributor>
   </contributors>
-    
+
   <scm>
     <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/javascript-maven-tools</connection>
     <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/javascript-maven-tools</developerConnection>
     <url>http://fisheye.codehaus.org/browse/mojo/trunk/sandbox/javascript-maven-tools</url>
-  </scm>    
+  </scm>
   <repositories>
     <repository>
       <id>codehaus.org</id>
@@ -107,3 +106,4 @@
     </pluginManagement>
   </build>
 </project>
+
