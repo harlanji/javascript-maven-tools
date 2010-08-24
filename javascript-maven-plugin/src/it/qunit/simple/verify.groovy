@@ -1,7 +1,6 @@
 
 // needed libraries are extracted
-// FIXME workDir should be transient
-File workDir = new File( basedir, "target/test-scripts" );
+File workDir = new File( basedir, "target/test-work" );
 
 assert new File( workDir, "lib/jquery/jquery.js" ).exists();
 assert new File( workDir, "lib/qunit/qunit.js" ).exists();

@@ -41,6 +41,10 @@
 				<artifactId>javascript-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<extensions>true</extensions>
+				<configuration>
+					<!-- specify work directory so that we can verify it -->
+					<workDirectory>${basedir}/target/test-work</workDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

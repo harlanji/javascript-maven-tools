@@ -56,6 +56,13 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	File suiteDirectory;
 
 	/**
+	 * Base directory where jsunit will run.
+	 *
+	 * @parameter 
+	 */
+	File workDirectory;
+
+	/**
 	 * Exclusion pattern.
 	 *
 	 * @parameter
@@ -71,9 +78,6 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	private static final String[] DEFAULT_INCLUDES = {"**/suite-*.html"};
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-
-		
-
 		if (skip) {
 			getLog().warn("tests are skipped.");
 			return;
@@ -89,8 +93,23 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		reportsDirectory.mkdirs();
 
-		File workDirectory = suiteDirectory;
-		workDirectory.mkdirs();
+		File outputDirectory = new File(project.getBuild().getOutputDirectory());
+
+		if(workDirectory == null) {
+			workDirectory = FileUtils.createTempFile("test", "work", outputDirectory);
+			workDirectory.deleteOnExit();
+		} else if(workDirectory.exists()) {
+			throw new MojoFailureException("workDirectory [" + workDirectory + "] already exists, and it should not.");
+		} else {
+			workDirectory.mkdirs();
+		}
+		
+		
+		try {
+			FileUtils.copyDirectory(suiteDirectory, workDirectory);
+		} catch (IOException ex) {
+			throw new MojoFailureException("Could not create workDirectory from suiteDirectory [" + suiteDirectory + "]");
+		}
 
 		File libDirectory = new File(workDirectory, "lib");
 		libDirectory.mkdirs();
@@ -103,25 +122,15 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		try {
 			// unpack project dependencies
-			javascriptArtifactManager.unpack(project, DefaultArtifact.SCOPE_TEST, workDirectory, true);
+			javascriptArtifactManager.unpack(project, DefaultArtifact.SCOPE_TEST, libDirectory, true);
 		} catch (ArchiverException ex) {
-			getLog().equals("Could not unpack dependencies");
-			return;
+			throw new MojoFailureException("Could not unpack dependencies");
 		}
 
 
-
-
-
-
-
-
-		//unpackJavascriptDependency( "com.soashable.vendor.junit:junit:[1.4,1.5)", workDirectory );
-		//unpackJavascriptDependency( "com.soashable.vendor.junit:qunit:[1.0,1.1)", workDirectory );
-
 		for (String suiteName : suites) {
 			getLog().info("Running suite: " + suiteName);
-			File suite = new File(suiteDirectory, suiteName);
+			File suite = new File(workDirectory, suiteName);
 
 
 			ReporterManager reporterManager = new ReporterManager(
@@ -166,7 +175,7 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		// Establish window scope with dom and all imported and inline scripts executed
 		//rt.execClasspathScript("env.rhino.js");
-		rt.execScriptFile(new File(suiteDirectory, "lib/envjs-rhino/env.rhino.js"));
+		rt.execScriptFile(new File(workDirectory, "lib/envjs-rhino/env.rhino.js"));
 
 		return rt;
 	}
