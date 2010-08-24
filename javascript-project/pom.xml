@@ -92,6 +92,37 @@
 
 	<profiles>
 		<profile>
+			<id>staging</id>
+
+			<pluginRepositories>
+				<pluginRepository>
+					<id>sonatype-nexus-staging</id>
+					<url>https://oss.sonatype.org/content/groups/staging</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</pluginRepository>
+			</pluginRepositories>
+
+			<repositories>
+				<repository>
+					<id>sonatype-nexus-staging</id>
+					<url>https://oss.sonatype.org/content/groups/staging</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+			</repositories>
+		</profile>
+
+
+		<profile>
 			<id>release-sign-artifacts</id>
 			<activation>
 				<property>
