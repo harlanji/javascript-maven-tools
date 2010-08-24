@@ -33,8 +33,14 @@ public class QUnitTestMojo extends AbstractRhinoTestMojo {
 
 	@Override
 	protected void runSuite(RhinoRuntime rt, File suite) throws Exception {
-		rt.execClasspathScript("jquery.js");
-		rt.execClasspathScript("qunit.js");
+		
+		
+		// FIXME
+		File workDirectory = suite.getParentFile();
+
+		rt.execScriptFile(new File(workDirectory, "lib/jquery/jquery.js"));
+		rt.execScriptFile(new File(workDirectory, "lib/qunit/qunit.js"));
+
 		rt.execClasspathScript("qunit-runner.js");
 
 		// HACK

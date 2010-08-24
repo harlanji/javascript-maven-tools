@@ -91,6 +91,12 @@ public class PackageMojo
      */
     private File scriptsDirectory;
 
+	/**
+	 * Create the distribution archive with everything in the scripts directory,
+	 * and attach a manifest (generate one if necessary).
+	 * 
+	 * @throws MojoExecutionException
+	 */
     public void execute()
         throws MojoExecutionException
     {

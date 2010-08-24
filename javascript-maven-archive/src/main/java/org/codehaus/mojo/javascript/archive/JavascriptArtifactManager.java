@@ -66,28 +66,34 @@ public class JavascriptArtifactManager
                 getLogger().info( "Unpack javascript dependency [" + dependency.toString() + "]" );
                 archiver.setSourceFile( dependency.getFile() );
 
-                File dest = target;
-                if ( useArtifactId )
-                {
-                    dest = new File( target, dependency.getArtifactId() );
-                }
-                unpack( dependency, dest );
+                unpack( dependency, target, useArtifactId );
             }
         }
     }
 
+	public void unpack( Artifact artifact, File target ) throws ArchiverException {
+		unpack(artifact, target, false);
+	}
+
     /**
      *
      */
-    public void unpack( Artifact artifact, File target )
+    public void unpack( Artifact artifact, File target, boolean useArtifactId )
         throws ArchiverException
     {
         archiver.setSourceFile( artifact.getFile() );
-        target.mkdirs();
-        archiver.setDestDirectory( target );
+        
+        
         archiver.setOverwrite( false );
         try
         {
+			File dest = target;
+			if ( useArtifactId )
+			{
+				dest = new File( target, artifact.getArtifactId() );
+			}
+			dest.mkdirs();
+			archiver.setDestDirectory( dest );
             archiver.extract();
         }
         catch ( Exception e )

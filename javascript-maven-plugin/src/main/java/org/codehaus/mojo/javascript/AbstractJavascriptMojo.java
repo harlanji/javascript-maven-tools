@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.javascript.archive.JavascriptArtifactManager;
 import org.codehaus.plexus.archiver.ArchiverException;
 
@@ -32,6 +33,16 @@ public abstract class AbstractJavascriptMojo
     extends AbstractMojo
 {
 
+	/**
+     * The maven project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    protected MavenProject project;
+
+
     /**
      * Map of of plugin artifacts.
      * 
@@ -39,17 +50,21 @@ public abstract class AbstractJavascriptMojo
      * @required
      * @readonly
      */
-    private Map pluginArtifactMap;
+    protected Map pluginArtifactMap;
 
     /**
      * @component 
      */
-    private JavascriptArtifactManager javascriptArtifactManager;
+    protected JavascriptArtifactManager javascriptArtifactManager;
+
+	protected void unpackJavascriptDependency( String artifact, File dest ) throws MojoExecutionException {
+		unpackJavascriptDependency(artifact, dest, false);
+	}
 
     /**
      * Unpack a javascript dependency
      */
-    protected void unpackJavascriptDependency( String artifact, File dest )
+    protected void unpackJavascriptDependency( String artifact, File dest, boolean useArtifactId )
         throws MojoExecutionException
     {
         if ( !pluginArtifactMap.containsKey( artifact ) )
@@ -61,7 +76,7 @@ public abstract class AbstractJavascriptMojo
 
         try
         {
-            javascriptArtifactManager.unpack( javascript, dest );
+            javascriptArtifactManager.unpack( javascript, dest, useArtifactId );
         }
         catch ( ArchiverException e )
         {

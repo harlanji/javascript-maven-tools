@@ -117,7 +117,9 @@
               <debug>true</debug>
               <projectsDirectory>src/it</projectsDirectory>
               <pomIncludes>
-                <pomInclude>qunit/*/pom.xml</pomInclude>
+				<pomInclude>compile/*/pom.xml</pomInclude>
+                <pomInclude>test-compile/*/pom.xml</pomInclude>
+				<pomInclude>qunit/*/pom.xml</pomInclude>
               </pomIncludes>
 
 
@@ -202,6 +204,33 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+	<dependency>
+      <groupId>rhino</groupId>
+      <artifactId>js</artifactId>
+      <version>1.7R2</version>
+	</dependency>
+
+	<!-- qunit -->
+	<dependency>
+      <groupId>com.soashable.vendor.envjs</groupId>
+      <artifactId>envjs-rhino</artifactId>
+      <version>1.2</version>
+	</dependency>
+		<dependency>
+      <groupId>com.soashable.vendor.jquery</groupId>
+      <artifactId>qunit</artifactId>
+      <version>1.0.0</version>
+	</dependency>
+	
+<dependency>
+      <groupId>com.soashable.vendor.jquery</groupId>
+      <artifactId>jquery</artifactId>
+      <version>1.4.2</version>
+	</dependency>
+
+
+
 
     <!-- jsUnit Mojo -->
     <dependency>

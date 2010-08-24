@@ -43,87 +43,56 @@ import org.codehaus.plexus.util.IOUtil;
  * optional assembler descriptor can be set to configure scripts to be merged.
  * Other scripts are simply copied to the output directory.
  * 
- * @goal compile
- * @phase compile
+
  * @author <a href="mailto:nicolas@apache.org">Nicolas De Loof</a>
  */
-public class CompileMojo
-    extends AbstractMojo
+public abstract class CompileMojo
+    extends AbstractJavascriptMojo
 {
-    /** default includes pattern */
-    private static final String[] DEFAULT_INCLUDES = { "**/*.js" };
 
-    /**
-     * The maven project.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
 
-    /**
-     * Location of the source files.
-     * 
-     * @parameter default-value="${basedir}/src/main/javascript"
-     */
-    protected File sourceDirectory;
+	public abstract File getDescriptor();
+	public abstract String getDescriptorFormat();
+	public abstract File getOutputDirectory();
+	public abstract File getSourceDirectory();
 
-    /**
-     * The output directory of the assembled js file.
-     * 
-     * @parameter default-value="${project.build.outputDirectory}"
-     */
-    protected File outputDirectory;
+	public abstract String[] getDefaultIncludes();
+	public abstract String[] getIncludes();
+	public abstract String[] getExcludes();
 
-    /**
-     * Exclusion pattern.
-     * 
-     * @parameter
-     */
-    private String[] excludes;
 
-    /**
-     * Inclusion pattern.
-     * 
-     * @parameter
-     */
-    private String[] includes;
+
+
 
     /**
      * @component
      */
-    private AssemblerReaderManager assemblerReaderManager;
+    protected AssemblerReaderManager assemblerReaderManager;
 
-    /**
-     * Descriptor for the strategy to assemble individual scripts sources into
-     * destination.
-     * 
-     * @parameter default-value="src/assembler/${project.artifactId}.xml"
-     */
-    private File descriptor;
 
-    /**
-     * Descriptor file format (default or jsbuilder)
-     * 
-     * @parameter
-     */
-    private String descriptorFormat;
 
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        outputDirectory.mkdirs();
+
+		if( !getSourceDirectory().exists() ) {
+			getLog().warn("No source directory exists at: " + getSourceDirectory() + "... continuing anyway.");
+			return;
+		}
+
+        getOutputDirectory().mkdirs();
 
         Set merged = assemble();
 
+		String[] includes = getIncludes();
+
         if ( includes == null )
         {
-            includes = DEFAULT_INCLUDES;
+            includes = getDefaultIncludes();
         }
         DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir( sourceDirectory );
-        scanner.setExcludes( excludes );
+        scanner.setBasedir( getSourceDirectory() );
+        scanner.setExcludes( getExcludes() );
         scanner.addDefaultExcludes();
 
         scanner.setIncludes( includes );
@@ -139,15 +108,15 @@ public class CompileMojo
                 {
                     continue;
                 }
-                File source = new File( sourceDirectory, file );
-                File dest = new File( outputDirectory, file );
+                File source = new File( getSourceDirectory(), file );
+                File dest = new File( getOutputDirectory(), file );
                 dest.getParentFile().mkdir();
                 FileUtils.copyFile( source, dest );
             }
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( "Failed to copy source files to " + outputDirectory,
+            throw new MojoExecutionException( "Failed to copy source files to " + getOutputDirectory(),
                 e );
         }
     }
@@ -162,6 +131,9 @@ public class CompileMojo
     protected Set assemble()
         throws MojoExecutionException
     {
+		File descriptor = getDescriptor();
+		String descriptorFormat = getDescriptorFormat();
+
         if ( descriptor == null )
         {
             return Collections.EMPTY_SET;
@@ -207,8 +179,8 @@ public class CompileMojo
         Set merged = new HashSet();
 
         DirectoryScanner scanner = new DirectoryScanner();
-        scanner.setBasedir( sourceDirectory );
-        scanner.setExcludes( excludes );
+        scanner.setBasedir( getSourceDirectory() );
+        scanner.setExcludes( getExcludes() );
         scanner.addDefaultExcludes();
 
         for ( Iterator iterator = assembler.getScripts().iterator(); iterator.hasNext(); )
@@ -218,7 +190,7 @@ public class CompileMojo
             PrintWriter writer = null;
             try
             {
-                File target = new File( outputDirectory, fileName );
+                File target = new File( getOutputDirectory(), fileName );
                 target.getParentFile().mkdirs();
                 writer = new PrintWriter( target );
 
@@ -233,7 +205,7 @@ public class CompileMojo
                     for ( int i = 0; i < files.length; i++ )
                     {
                         String file = files[i];
-                        File source = new File( sourceDirectory.getAbsolutePath() + "/" + file );
+                        File source = new File( getSourceDirectory().getAbsolutePath() + "/" + file );
                         IOUtil.copy( new FileReader( source ), writer );
                         writer.println();
                         merged.add( file );
@@ -250,13 +222,5 @@ public class CompileMojo
             }
         }
         return merged;
-    }
-
-    /**
-     * @return the project
-     */
-    protected MavenProject getProject()
-    {
-        return project;
     }
 }

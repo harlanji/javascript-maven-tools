@@ -37,17 +37,9 @@ import org.codehaus.plexus.archiver.ArchiverException;
  * @author <a href="mailto:nicolas@apache.org">nicolas De Loof</a>
  */
 public class InPlaceMojo
-    extends AbstractMojo
+    extends WarPackageMojo
 {
 
-    /**
-     * The maven project.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
 
     /**
      * Single directory for extra files to include in the WAR.
@@ -56,20 +48,15 @@ public class InPlaceMojo
      * @required
      */
     private File warSourceDirectory;
-
-    /**
-     * The folder in webapp for javascripts
+	
+	/**
+     * The directory where the webapp is built.
      * 
-     * @parameter expression="${scripts}" default-value="scripts/libs"
+     * @parameter default-value="${warSourceDirectory}"
+     * @required
      */
-    private String scriptsDirectory;
+    protected File webappDirectory;
 
-    /**
-     * The folder for javascripts dependencies
-     * 
-     * @parameter expression="${scripts}" default-value="lib"
-     */
-    private String libsDirectory;
 
     /**
      * Use the artifactId as folder
@@ -84,22 +71,17 @@ public class InPlaceMojo
     private JavascriptArtifactManager javascriptArtifactManager;
 
     /**
-     * {@inheritDoc}
+     * Set super's webappDirectory = warSourceDirectory and then
+	 * execute as usual.
      * 
      * @see org.apache.maven.plugin.Mojo#execute()
      */
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        try
-        {
-            javascriptArtifactManager.unpack( project, DefaultArtifact.SCOPE_RUNTIME, new File(
-                warSourceDirectory, scriptsDirectory + "/" + libsDirectory ), useArtifactId );
-        }
-        catch ( ArchiverException e )
-        {
-            throw new MojoExecutionException( "Failed to unpack javascript dependencies", e );
-        }
+
+		super.webappDirectory = warSourceDirectory;
+		super.execute();
 
     }
 }

@@ -38,116 +38,84 @@ import org.codehaus.plexus.util.FileUtils;
  * @author <a href="mailto:nicolas@apache.org">Nicolas De Loof</a>
  */
 public class PrepareTestsMojo
-    extends AbstractMojo
+    extends CompileMojo
 {
 
-    /**
-     * The maven project.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
 
-    /**
-     * Set this to 'true' to bypass unit tests entirely. Its use is NOT
-     * RECOMMENDED, but quite convenient on occasion.
-     * 
-     * @parameter expression="${maven.test.skip}"
-     */
-    private boolean skip;
+    /** default includes pattern */
+    private static final String[] DEFAULT_INCLUDES = { "**/*.js", "**/*.html" };
+
 
     /**
      * Location of the source files.
-     * 
-     * @parameter default-value="${basedir}/src/main/javascript"
+     *
+     * @parameter default-value="${basedir}/src/test/javascript"
      */
     protected File sourceDirectory;
 
     /**
-     * Location of the source files.
-     * 
-     * @parameter default-value="${basedir}/src/test/javascript"
-     */
-    protected File testSourceDirectory;
-
-    /**
-     * Location of the source files.
-     * 
-     * @parameter default-value="${project.build.directory}/test-scripts"
+     * The output directory of the assembled js file.
+     *
+     * @parameter default-value="${basedir}/target/test-scripts"
      */
     protected File outputDirectory;
 
     /**
-     * The folder for javascripts dependencies
-     * 
-     * @parameter expression="${scripts}" default-value="lib"
+     * Descriptor for the strategy to assemble individual scripts sources into
+     * destination.
+     *
+     * @parameter 
      */
-    private String libsDirectory;
+    protected File descriptor;
 
     /**
-     * Use the artifactId as folder
-     * 
+     * Descriptor file format (default or jsbuilder)
+     *
      * @parameter
      */
-    private boolean useArtifactId;
+    protected String descriptorFormat;
+
+
+   /**
+     * Exclusion pattern.
+     *
+     * @parameter
+     */
+    protected String[] excludes;
 
     /**
-     * @component
+     * Inclusion pattern.
+     *
+     * @parameter
      */
-    private JavascriptArtifactManager javascriptArtifactManager;
+    protected String[] includes;
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see org.apache.maven.plugin.Mojo#execute()
-     */
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( skip || !testSourceDirectory.exists() )
-        {
-            return;
-        }
 
-        DirectoryScanner scanner = new DirectoryScanner();
-        scanner.addDefaultExcludes();
-        try
-        {
-            scanner.setBasedir( sourceDirectory );
-            scanner.scan();
-            String[] files = scanner.getIncludedFiles();
-            for ( int i = 0; i < files.length; i++ )
-            {
-                File destFile = new File( outputDirectory, files[i] );
-                destFile.getParentFile().mkdirs();
-                FileUtils.copyFile( new File( sourceDirectory, files[i] ), destFile );
-            }
+	public String[] getDefaultIncludes() {
+		return DEFAULT_INCLUDES;
+	}
 
-            scanner.setBasedir( testSourceDirectory );
-            scanner.scan();
-            files = scanner.getIncludedFiles();
-            for ( int i = 0; i < files.length; i++ )
-            {
-                File destFile = new File( outputDirectory, files[i] );
-                destFile.getParentFile().mkdirs();
-                FileUtils.copyFile( new File( testSourceDirectory, files[i] ), destFile );
-            }
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Failed to copy scripts in " + outputDirectory );
-        }
+	public File getDescriptor() {
+		return descriptor;
+	}
 
-        try
-        {
-            javascriptArtifactManager.unpack( project, DefaultArtifact.SCOPE_TEST, new File(
-                outputDirectory, libsDirectory ), useArtifactId );
-        }
-        catch ( ArchiverException e )
-        {
-            throw new MojoExecutionException( "Failed to unpack javascript dependencies", e );
-        }
-    }
+	public String getDescriptorFormat() {
+		return descriptorFormat;
+	}
+
+	public File getOutputDirectory() {
+		return outputDirectory;
+	}
+
+	public File getSourceDirectory() {
+		return sourceDirectory;
+	}
+
+	public String[] getExcludes() {
+		return excludes;
+	}
+
+	public String[] getIncludes() {
+		return includes;
+	}
 }

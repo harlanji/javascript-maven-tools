@@ -25,7 +25,9 @@ import org.codehaus.mojo.javascript.archive.JavascriptArtifactManager;
 import org.codehaus.plexus.archiver.ArchiverException;
 
 /**
- * Goal that prepares scripts for packaging as a web application.
+ * Compile scripts in a WAR the same way as for a stand-alone javascript project,
+ * except output the scripts to the webapp's target directory instead of
+ * a dedicated scripts output directory.
  * 
  * @goal war-package
  * @requiresDependencyResolution runtime
@@ -33,7 +35,7 @@ import org.codehaus.plexus.archiver.ArchiverException;
  * @author <a href="mailto:nicolas@apache.org">Nicolas De Loof</a>
  */
 public class WarPackageMojo
-    extends CompileMojo
+    extends CompileSourceMojo
 {
 
     /**
@@ -42,36 +44,37 @@ public class WarPackageMojo
      * @parameter expression="${project.build.directory}/${project.build.finalName}"
      * @required
      */
-    private File webappDirectory;
+    protected File webappDirectory;
 
     /**
      * The folder in webapp for javascripts
      * 
      * @parameter expression="${scripts}" default-value="scripts"
      */
-    private String scriptsDirectory;
+    protected String scriptsDirectory;
 
     /**
      * The folder for javascripts dependencies
      * 
      * @parameter expression="${scripts}" default-value="lib"
      */
-    private String libsDirectory;
+    protected String libsDirectory;
 
     /**
      * Use the artifactId as folder
      * 
      * @parameter
      */
-    private boolean useArtifactId;
+    protected boolean useArtifactId;
 
     /**
      * @component 
      */
-    private JavascriptArtifactManager javascriptArtifactManager;
+    protected JavascriptArtifactManager javascriptArtifactManager;
 
     /**
-     * {@inheritDoc}
+	 * Set the output directory to webappDirectory/scriptsDirectory and then
+	 * copy all dependencies to webappDirectory/scriptsDirectory/libDirectory.
      * 
      * @see org.apache.maven.plugin.Mojo#execute()
      */
@@ -83,7 +86,7 @@ public class WarPackageMojo
 
         try
         {
-            javascriptArtifactManager.unpack( getProject(), DefaultArtifact.SCOPE_RUNTIME,
+            javascriptArtifactManager.unpack( project, DefaultArtifact.SCOPE_RUNTIME,
                 new File( webappDirectory, scriptsDirectory + "/" + libsDirectory ), useArtifactId );
         }
         catch ( ArchiverException e )

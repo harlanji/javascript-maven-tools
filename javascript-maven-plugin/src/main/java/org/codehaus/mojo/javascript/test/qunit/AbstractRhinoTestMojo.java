@@ -1,17 +1,25 @@
 package org.codehaus.mojo.javascript.test.qunit;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.AbstractMojo;
+import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.*;
 import java.util.*;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.surefire.report.FileReporter;
 import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterManager;
 import org.apache.maven.surefire.report.XMLReporter;
 import org.codehaus.mojo.javascript.AbstractJavascriptMojo;
+import org.codehaus.mojo.javascript.archive.Types;
+import org.codehaus.plexus.util.FileUtils;
 
 
 /**
@@ -45,13 +53,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	 *
 	 * @parameter expression="${project.build.directory}/test-scripts"
 	 */
-	File workDirectory;
-	/**
-	 * Base directory for jsunit test.
-	 *
-	 * @parameter expression="${basedir}/src/test/javascript"
-	 */
-	File testSourceDirectory;
+	File suiteDirectory;
+
 	/**
 	 * Exclusion pattern.
 	 *
@@ -64,9 +67,12 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	 * @parameter
 	 */
 	String[] includes;
-	private static final String[] DEFAULT_INCLUDES = {"**/*.html", "**/*.htm", "**/*.js"};
+
+	private static final String[] DEFAULT_INCLUDES = {"**/suite-*.html"};
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
+
+		
 
 		if (skip) {
 			getLog().warn("tests are skipped.");
@@ -81,15 +87,41 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 			return;
 		}
 
-		workDirectory.mkdirs();
 		reportsDirectory.mkdirs();
 
+		File workDirectory = suiteDirectory;
+		workDirectory.mkdirs();
 
-		unpackJavascriptDependency( "net.jsunit:jsunit-testRunner", workDirectory );
+		File libDirectory = new File(workDirectory, "lib");
+		libDirectory.mkdirs();
+
+
+		// unpack test suite dependencies
+		unpackJavascriptDependency("com.soashable.vendor.envjs:envjs-rhino", libDirectory, true);
+		unpackJavascriptDependency("com.soashable.vendor.jquery:qunit", libDirectory, true);
+		unpackJavascriptDependency("com.soashable.vendor.jquery:jquery", libDirectory, true);
+
+		try {
+			// unpack project dependencies
+			javascriptArtifactManager.unpack(project, DefaultArtifact.SCOPE_TEST, workDirectory, true);
+		} catch (ArchiverException ex) {
+			getLog().equals("Could not unpack dependencies");
+			return;
+		}
+
+
+
+
+
+
+
+
+		//unpackJavascriptDependency( "com.soashable.vendor.junit:junit:[1.4,1.5)", workDirectory );
+		//unpackJavascriptDependency( "com.soashable.vendor.junit:qunit:[1.0,1.1)", workDirectory );
 
 		for (String suiteName : suites) {
 			getLog().info("Running suite: " + suiteName);
-			File suite = new File(testSourceDirectory, suiteName);
+			File suite = new File(suiteDirectory, suiteName);
 
 
 			ReporterManager reporterManager = new ReporterManager(
@@ -131,8 +163,10 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		// Put our reporting callbacks in there
 		rt.putGlobal("$report", reportCb);
 
+
 		// Establish window scope with dom and all imported and inline scripts executed
-		rt.execClasspathScript("env.rhino.js");
+		//rt.execClasspathScript("env.rhino.js");
+		rt.execScriptFile(new File(suiteDirectory, "lib/envjs-rhino/env.rhino.js"));
 
 		return rt;
 	}
@@ -140,11 +174,12 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	protected abstract void runSuite(RhinoRuntime rt, File suite) throws Exception;
 
 	private String[] getTestsToRun() {
-		if (!testSourceDirectory.exists()) {
+		if (!suiteDirectory.exists()) {
+			getLog().warn("No suite directory exists");
 			return new String[0];
 		}
 		DirectoryScanner scanner = new DirectoryScanner();
-		scanner.setBasedir(testSourceDirectory);
+		scanner.setBasedir(suiteDirectory);
 		scanner.setExcludes(excludes);
 		scanner.addDefaultExcludes();
 		if (includes == null) {
