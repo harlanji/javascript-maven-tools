@@ -49,11 +49,11 @@
             <id>default</id>
             <phases>
               <process-resources>org.apache.maven.plugins:maven-resources-plugin:resources</process-resources>
-              <compile>org.codehaus.mojo.javascript:javascript-maven-plugin:compile</compile>
+              <compile>com.devspan.mojo.javascript:javascript-maven-plugin:compile</compile>
               <process-test-resources>org.apache.maven.plugins:maven-resources-plugin:testResources</process-test-resources>
-              <test-compile>org.codehaus.mojo.javascript:javascript-maven-plugin:prepare-tests</test-compile>
-              <test>org.codehaus.mojo.javascript:javascript-maven-plugin:qunit-test</test>
-              <package>org.codehaus.mojo.javascript:javascript-maven-plugin:package</package>
+              <test-compile>com.devspan.mojo.javascript:javascript-maven-plugin:prepare-tests</test-compile>
+              <test>com.devspan.mojo.javascript:javascript-maven-plugin:qunit-test</test>
+              <package>com.devspan.mojo.javascript:javascript-maven-plugin:package</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
             </phases>

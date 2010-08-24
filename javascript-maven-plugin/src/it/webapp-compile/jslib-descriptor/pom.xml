@@ -33,7 +33,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo.javascript</groupId>
+				<groupId>com.devspan.mojo.javascript</groupId>
 				<artifactId>javascript-maven-plugin</artifactId>
 				<version>@pom.version@</version>
 				<extensions>true</extensions>

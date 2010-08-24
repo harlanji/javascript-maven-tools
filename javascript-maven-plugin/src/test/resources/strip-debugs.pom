@@ -2,7 +2,7 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>com.devspan.mojo.javascript</groupId>
         <artifactId>javascript-maven-plugin</artifactId>
         <configuration>
           <webappDirectory>${basedir}/target/test-target</webappDirectory>

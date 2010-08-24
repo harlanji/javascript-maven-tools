@@ -31,7 +31,7 @@
   <reporting>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo.javascript</groupId>
+        <groupId>com.devspan.mojo.javascript</groupId>
         <artifactId>javascript-report-maven-plugin</artifactId>
         <version>@pom.version@</version>
         <configuration>
