@@ -7,6 +7,15 @@
     <packaging>pom</packaging>
 	<version>0.9.1-SNAPSHOT</version>
 
+	<name>Javascript Project Base</name>
+	<url>http://mojo.codehaus.org/javascript-maven-tools/javascript-maven-plugin/</url>
+
+	<parent>
+		<groupId>com.devspan.mojo.javascript</groupId>
+		<artifactId>javascript-maven-tools</artifactId>
+		<version>0.9.1-SNAPSHOT</version>
+	</parent>
+
 	<build>
 		<plugins>
 			<plugin>
