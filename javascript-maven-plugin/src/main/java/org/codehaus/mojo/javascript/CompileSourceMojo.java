@@ -42,7 +42,7 @@ public class CompileSourceMojo extends CompileMojo {
     /**
      * The output directory of the assembled js file.
      *
-     * @parameter default-value="${basedir}/target/scripts"
+     * @parameter default-value="${project.build.outputDirectory}"
      */
     protected File outputDirectory;
 
