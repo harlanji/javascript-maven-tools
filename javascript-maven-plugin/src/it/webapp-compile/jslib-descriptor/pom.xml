@@ -46,9 +46,6 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<useArtifactId>true</useArtifactId>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

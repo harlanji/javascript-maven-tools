@@ -63,7 +63,7 @@ public class WarPackageMojo
     /**
      * Use the artifactId as folder
      * 
-     * @parameter
+     * @parameter default-value="true"
      */
     protected boolean useArtifactId;
 
