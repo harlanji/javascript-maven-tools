@@ -44,31 +44,11 @@ public class InPlaceMojo
     /**
      * Single directory for extra files to include in the WAR.
      * 
-     * @parameter expression="${basedir}/src/main/webapp"
+     * @parameter default-value="${basedir}/src/main/webapp"
      * @required
      */
     private File warSourceDirectory;
-	
-	/**
-     * The directory where the webapp is built.
-     * 
-     * @parameter default-value="${warSourceDirectory}"
-     * @required
-     */
-    protected File webappDirectory;
 
-
-    /**
-     * Use the artifactId as folder
-     * 
-     * @parameter
-     */
-    private boolean useArtifactId;
-
-    /**
-     * @component
-     */
-    private JavascriptArtifactManager javascriptArtifactManager;
 
     /**
      * Set super's webappDirectory = warSourceDirectory and then
