@@ -29,7 +29,7 @@
   <artifactId>javascript-maven-tools</artifactId>
   <packaging>pom</packaging>
   <name>Maven tools for JavaScript developers</name>
-  <version>1.0-alpha-1-SNAPSHOT</version>
+  <version>1.0-alpha-1</version>
   <url>http://mojo.codehaus.org/javascript-maven-tools</url>
 
   <description>
