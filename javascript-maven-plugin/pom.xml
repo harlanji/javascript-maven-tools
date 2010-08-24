@@ -120,6 +120,7 @@
 				<pomInclude>compile/*/pom.xml</pomInclude>
                 <pomInclude>test-compile/*/pom.xml</pomInclude>
 				<pomInclude>qunit/*/pom.xml</pomInclude>
+				<pomInclude>webapp-compile/*/pom.xml</pomInclude>
               </pomIncludes>
 
 
