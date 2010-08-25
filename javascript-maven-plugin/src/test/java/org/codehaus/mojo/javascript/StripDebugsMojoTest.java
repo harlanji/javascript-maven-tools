@@ -35,7 +35,7 @@ public class StripDebugsMojoTest
             target );
 
         File testPom = new File( getBasedir(), "src/test/resources/strip-debugs.pom" );
-        Mojo mojo = (Mojo) lookupMojo( "compress", testPom );
+        Mojo mojo = (Mojo) lookupMojo( "war-compress", testPom );
         assertNotNull( "Failed to configure the plugin", mojo );
 
         mojo.execute();

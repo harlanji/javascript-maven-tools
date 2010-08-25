@@ -19,12 +19,19 @@ package org.codehaus.mojo.javascript;
 import java.io.File;
 
 /**
- * Goal to be used from a war project, to compress the scripts present in the
- * webapp packaging folder. Configured to run in the test phase as there is no
+ * Goal to be used from a war project, to compress ALL scripts present in the
+ * webapp packaging folder, including dependencies.
+ *
+ * Configured to run in the test phase as there is no
  * way (in maven 2.0) to run between exploded webapp assembly and .war
  * packaging.
- * 
- * @goal compress
+ *
+ * NOTE prepare-package was added in maven 2.1 - http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+ *
+ * TODO make a way to use lib/ in the includes/excludes, for selective compression
+ * of dependencies.
+ *
+ * @goal war-compress
  * @phase test
  * @author <a href="mailto:nicolas@apache.org">nicolas De Loof</a>
  */

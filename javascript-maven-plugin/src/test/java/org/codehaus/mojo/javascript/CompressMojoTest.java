@@ -57,7 +57,7 @@ public class CompressMojoTest
         FileUtils.copyDirectory( new File( "src/test/resources/scripts" ), target );
 
         File testPom = new File( getBasedir(), "/target/test-classes/compress.pom" );
-        Mojo mojo = (Mojo) lookupMojo( "compress", testPom );
+        Mojo mojo = (Mojo) lookupMojo( "war-compress", testPom );
         assertNotNull( "Failed to configure the plugin", mojo );
 
         mojo.execute();
@@ -81,7 +81,7 @@ public class CompressMojoTest
         FileUtils.copyDirectory( new File( "src/test/resources/zero-length" ), target );
 
         File testPom = new File( getBasedir(), "/target/test-classes/compress-zero-length.pom" );
-        Mojo mojo = (Mojo) lookupMojo( "compress", testPom );
+        Mojo mojo = (Mojo) lookupMojo( "war-compress", testPom );
         assertNotNull( "Failed to configure the plugin", mojo );
 
         mojo.execute();

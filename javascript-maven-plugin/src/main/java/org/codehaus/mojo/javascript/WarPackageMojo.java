@@ -84,6 +84,9 @@ public class WarPackageMojo
         super.outputDirectory = new File( webappDirectory, scriptsDirectory );
         super.execute();
 
+		// FIXME the following stuff should go inside a separate mojo
+		// that runs in the prepare-package phase (post 2.1).
+
         try
         {
             javascriptArtifactManager.unpack( project, DefaultArtifact.SCOPE_RUNTIME,

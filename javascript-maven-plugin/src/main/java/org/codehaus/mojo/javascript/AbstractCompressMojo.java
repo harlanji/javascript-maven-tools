@@ -24,11 +24,14 @@ import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -91,6 +94,15 @@ public abstract class AbstractCompressMojo
      * @parameter expression="${project.pluginArtifactRepositories}"
      */
     private List remoteRepositories;
+
+	/**
+     * Map of of plugin artifacts.
+     *
+     * @parameter expression="${plugin.artifactMap}"
+     * @required
+     * @readonly
+     */
+    private Map pluginArtifactMap;
 
     /**
      *
@@ -262,12 +274,17 @@ public abstract class AbstractCompressMojo
         // allows to use multiple compressor that rely on modifier Rhino engines
         // without dependencies/classpath conflicts
 
+		// FIXME compressors should not require the same version as this plugin.
+
         String id = compressor.toLowerCase() + "-compressor";
 
-        // TODO don't have version hardcoded
+		Artifact pluginArtifact = (Artifact)pluginArtifactMap.get("com.devspan.mojo.javascript:javascript-compressor-api");
+		String compressorVersion = pluginArtifact.getVersion();
+		getLog().debug("Compressor API Version: " + compressorVersion);
+
         Artifact compressorArtifact =
-            artifactFactory.createDependencyArtifact( "org.codehaus.mojo.javascript", id,
-                VersionRange.createFromVersion( "1.0-alpha-1-SNAPSHOT" ), "jar", null,
+            artifactFactory.createDependencyArtifact( "com.devspan.mojo.javascript", id,
+                VersionRange.createFromVersion( compressorVersion ), "jar", null,
                 Artifact.SCOPE_RUNTIME );
 
         Artifact originatingArtifact =
