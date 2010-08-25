@@ -55,6 +55,13 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	 */
 	File suiteDirectory;
 
+    /**
+     * The output directory of the assembled js file.
+     *
+     * @parameter default-value="${project.build.outputDirectory}"
+     */
+    protected File outputDirectory;
+
 	/**
 	 * Base directory where jsunit will run.
 	 *
@@ -103,10 +110,17 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		} else {
 			workDirectory.mkdirs();
 		}
-		
-		
+
+		// copy scripts to work directory
 		try {
-			FileUtils.copyDirectory(suiteDirectory, workDirectory);
+			FileUtils.copyDirectoryStructure(outputDirectory, workDirectory);
+		} catch (IOException ex) {
+			throw new MojoFailureException("Could not create workDirectory from suiteDirectory [" + suiteDirectory + "]");
+		}
+		
+		// copy test suite to work directory
+		try {
+			FileUtils.copyDirectoryStructure(suiteDirectory, workDirectory);
 		} catch (IOException ex) {
 			throw new MojoFailureException("Could not create workDirectory from suiteDirectory [" + suiteDirectory + "]");
 		}
