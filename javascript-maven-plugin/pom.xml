@@ -212,20 +212,20 @@
 
 	<!-- qunit -->
 	<dependency>
-      <groupId>com.soashable.vendor.envjs</groupId>
+      <groupId>com.devspan.vendor.envjs</groupId>
       <artifactId>envjs-rhino</artifactId>
-      <version>1.2</version>
+      <version>[1.2,1.3)</version>
 	</dependency>
 		<dependency>
-      <groupId>com.soashable.vendor.jquery</groupId>
+      <groupId>com.devspan.vendor.jquery</groupId>
       <artifactId>qunit</artifactId>
-      <version>1.0.0</version>
+      <version>[1.0,1.1)</version>
 	</dependency>
 	
 <dependency>
-      <groupId>com.soashable.vendor.jquery</groupId>
+      <groupId>com.devspan.vendor.jquery</groupId>
       <artifactId>jquery</artifactId>
-      <version>1.4.2</version>
+      <version>[1.4,1.5)</version>
 	</dependency>
 
 

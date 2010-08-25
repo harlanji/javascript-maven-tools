@@ -116,9 +116,9 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 
 		// unpack test suite dependencies
-		unpackJavascriptDependency("com.soashable.vendor.envjs:envjs-rhino", libDirectory, true);
-		unpackJavascriptDependency("com.soashable.vendor.jquery:qunit", libDirectory, true);
-		unpackJavascriptDependency("com.soashable.vendor.jquery:jquery", libDirectory, true);
+		unpackJavascriptDependency("com.devspan.vendor.envjs:envjs-rhino", libDirectory, true);
+		unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libDirectory, true);
+		unpackJavascriptDependency("com.devspan.vendor.jquery:jquery", libDirectory, true);
 
 		try {
 			// unpack project dependencies
