@@ -50,16 +50,26 @@ public class JavascriptArtifactManager
         super();
     }
 
+	/**
+     *
+	 * if you are using this method make sure the mojo has @requiresDependencyResolution [scope]
+	 */
     public void unpack( MavenProject project, String scope, File target, boolean useArtifactId )
         throws ArchiverException
     {
         archiver.setOverwrite( false );
 
         Set dependencies = project.getArtifacts();
+
+		if( dependencies.size() == 0 ) {
+			getLogger().warn("JavascriptArtifactManager.unpack: # of dependencies = 0... make sure the calling mojo is using @requiresDependencyResolution. this may not be an error if your project has no dependencies." );
+		}
+
         ArtifactFilter runtime = new ScopeArtifactFilter( scope );
         for ( Iterator iterator = dependencies.iterator(); iterator.hasNext(); )
         {
             Artifact dependency = (Artifact) iterator.next();
+
             if ( !dependency.isOptional() && Types.JAVASCRIPT_TYPE.equals( dependency.getType() )
                 && runtime.include( dependency ) )
             {

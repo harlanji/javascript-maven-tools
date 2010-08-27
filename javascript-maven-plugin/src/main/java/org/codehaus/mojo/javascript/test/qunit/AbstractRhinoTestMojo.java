@@ -25,6 +25,7 @@ import org.codehaus.plexus.util.FileUtils;
 /**
  *
  * @author harlan
+ * @requiresDependencyResolution test
  */
 public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 

@@ -28,6 +28,7 @@ import org.mozilla.javascript.Scriptable;
  * @component
  * @goal qunit-test
  * @phase test
+ * 
  */
 public class QUnitTestMojo extends AbstractRhinoTestMojo {
 

@@ -28,6 +28,8 @@ import org.codehaus.plexus.archiver.ArchiverException;
 
 /**
  * @author <a href="mailto:nicolas@apache.org">Nicolas De Loof</a>
+ * @author <a href="mailto:h.iverson@gmail.com">Harlan Iverson</a>
+ * @requiresDependencyResolution compile
  */
 public abstract class AbstractJavascriptMojo
     extends AbstractMojo
