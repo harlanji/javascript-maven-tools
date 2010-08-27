@@ -103,13 +103,17 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		File outputDirectory = new File(project.getBuild().getOutputDirectory());
 
 		if(workDirectory == null) {
+			getLog().debug("Creating temp working directory");
 			workDirectory = FileUtils.createTempFile("test", "work", outputDirectory);
 			workDirectory.deleteOnExit();
 		} else if(workDirectory.exists()) {
 			throw new MojoFailureException("workDirectory [" + workDirectory + "] already exists, and it should not.");
 		} else {
+			getLog().debug("Creating specified working directory");
 			workDirectory.mkdirs();
 		}
+
+		getLog().debug("Copying source to working directory");
 
 		// copy scripts to work directory
 		try {
@@ -117,6 +121,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		} catch (IOException ex) {
 			throw new MojoFailureException("Could not create workDirectory from suiteDirectory [" + suiteDirectory + "]");
 		}
+
+		getLog().debug("Copying test source to working directory");
 		
 		// copy test suite to work directory
 		try {
@@ -127,6 +133,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		File libDirectory = new File(workDirectory, "lib");
 		libDirectory.mkdirs();
+
+		getLog().debug("Unpacking dependencies");
 
 
 		// unpack test suite dependencies
@@ -155,7 +163,7 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 						new XMLReporter(reportsDirectory, Boolean.FALSE)
 					}));
 
-			ReportCallbacks reportCb = new ReportCallbacks(reporterManager);
+			ReportCallbacks reportCb = new ReportCallbacks(reporterManager, getLog());
 
 			final RhinoRuntime rt;
 			try {
@@ -172,8 +180,12 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 			rt.close();
 
+			getLog().debug("Finished suite: " + suiteName);
+
 			checkFailure(reporterManager);
 		}
+
+		getLog().debug("Finished running all tests.");
 
 	}
 
@@ -185,6 +197,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	 * @throws Exception
 	 */
 	protected RhinoRuntime createRhinoRuntime(ReportCallbacks reportCb) throws Exception {
+		getLog().debug("Creating Rhino Runtime");
+
 		RhinoRuntime rt = new RhinoRuntime();
 
 		// Put our reporting callbacks in there
@@ -194,6 +208,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		// Establish window scope with dom and all imported and inline scripts executed
 		//rt.execClasspathScript("env.rhino.js");
 		rt.execScriptFile(new File(workDirectory, "lib/envjs-rhino/env.rhino.js"));
+
+		getLog().debug("Runtime Created");
 
 		return rt;
 	}
