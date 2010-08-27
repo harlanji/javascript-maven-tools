@@ -33,9 +33,10 @@ public class QUnitTestMojo extends AbstractRhinoTestMojo {
 
 	@Override
 	protected void runSuite(RhinoRuntime rt, File suite) throws Exception {
-		
-		rt.execScriptFile(new File(workDirectory, "lib/jquery/jquery.js"));
-		rt.execScriptFile(new File(workDirectory, "lib/qunit/qunit.js"));
+
+		// FIXME do we want to provide qunit automatically? maybe if no others
+		// have been loaded when the first test starts.
+		//rt.execScriptFile(new File(workDirectory, "lib/qunit/qunit.js"));
 
 		rt.execClasspathScript("qunit-runner.js");
 

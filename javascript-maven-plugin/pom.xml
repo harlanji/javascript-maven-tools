@@ -113,14 +113,13 @@
             <configuration>
               <debug>true</debug>
               <projectsDirectory>src/it</projectsDirectory>
-              <pomIncludes>
-				  <!--
+			<pomIncludes>
 				<pomInclude>compile/*/pom.xml</pomInclude>
-                <pomInclude>test-compile/*/pom.xml</pomInclude>
+				<pomInclude>test-compile/*/pom.xml</pomInclude>
 				<pomInclude>qunit/*/pom.xml</pomInclude>
 				<pomInclude>webapp-compile/*/pom.xml</pomInclude>
 				<pomInclude>inplace/*/pom.xml</pomInclude>
-				-->
+
 				<pomInclude>compressor/*/pom.xml</pomInclude>
               </pomIncludes>
 
@@ -223,12 +222,6 @@
       <groupId>com.devspan.vendor.jquery</groupId>
       <artifactId>qunit</artifactId>
       <version>[1.0,1.1)</version>
-	</dependency>
-	
-<dependency>
-      <groupId>com.devspan.vendor.jquery</groupId>
-      <artifactId>jquery</artifactId>
-      <version>[1.4,1.5)</version>
 	</dependency>
 
 

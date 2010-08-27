@@ -11,15 +11,32 @@ import org.mozilla.javascript.tools.shell.Global;
 
 public class RhinoRuntime {
 
-	protected final Global global;
-	protected final Context context;
-	protected final Scriptable scope;
+	protected Global global;
+	protected Context context;
+	protected Scriptable scope;
 
 	public RhinoRuntime() {
-		global = new Global();
-		context = createAndInitializeContext(global);
-		scope = context.initStandardObjects(global);
+		createAndInitializeContext();
 	}
+
+	public void close() {
+		if( context != null ) {
+			Context.exit();
+			scope = null;
+			global = null;
+			context = null;
+		}
+	}
+
+	protected void finalize() throws Throwable {
+		try {
+			close();
+		} finally {
+			super.finalize();
+		}
+	}
+
+
 
 	public void putGlobal(String name, Object obj) {
 		scope.put(name, scope, Context.toObject(obj, scope));
@@ -76,11 +93,13 @@ public class RhinoRuntime {
 	}
 
 
-	private Context createAndInitializeContext(Global global) {
-		Context myContext = ContextFactory.getGlobal().enter();
-		global.init(myContext);
-		myContext.setOptimizationLevel(-1);
-		myContext.setLanguageVersion(Context.VERSION_1_5);
-		return myContext;
+	private void createAndInitializeContext() {
+		context = Context.enter();
+		global = new Global();
+		global.init(context);
+		scope = context.initStandardObjects(global);
+
+		context.setOptimizationLevel(-1);
+		context.setLanguageVersion(Context.VERSION_1_5);
 	}
 }

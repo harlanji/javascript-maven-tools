@@ -131,8 +131,10 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		// unpack test suite dependencies
 		unpackJavascriptDependency("com.devspan.vendor.envjs:envjs-rhino", libDirectory, true);
+
+		// FIXME this should be in QUnit subclass. need to refactor this stuff so that it
+		// has access to libsDirectory and whatnot first.
 		unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libDirectory, true);
-		unpackJavascriptDependency("com.devspan.vendor.jquery:jquery", libDirectory, true);
 
 		try {
 			// unpack project dependencies
@@ -167,6 +169,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 			} catch(Exception e) {
 				throw new MojoExecutionException("Error running test suite '"+suite.getAbsolutePath()+"'.", e);
 			}
+
+			rt.close();
 
 			checkFailure(reporterManager);
 		}

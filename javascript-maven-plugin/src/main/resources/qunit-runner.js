@@ -1,5 +1,15 @@
 //load("lib/envjs-rhino/env.rhino.js");
 
+(function() {
+
+
+function bind(fn, context) {
+	return function() {
+		fn.apply(context, arguments);
+	};
+};
+
+
 Envjs({
 	scriptTypes : {
 		'text/javascript' : true,
@@ -8,24 +18,27 @@ Envjs({
 	},
 
 	beforeScriptLoad: {
-		'jquery[\-\d|\.js]': function(scriptNode) {
-			//scriptNode.src = "scripts/lib/jquery/jquery.js";
-			//scriptNode.src = "";
 
-			//print("Use our own jQuery...\n");
-
-		},
-
-		'qunit[\-\d|\.js]': function(scriptNode) {
-			//scriptNode.src = "scripts/lib/qunit/qunit.js";
-			//scriptNode.src = "";
-
-			//print("Use our own QUnit...\n");
-		}
 	},
 
 	afterScriptLoad: {
+		'qunit[\-\d|\.js]': function(scriptNode) {
 
+			// bind QUnit events to the special $report object. its interface is
+			// modeled after QUnit. other test frameworks need to make an adapter.
+
+			var bindList = ['log', 'testStart', 'testDone', 'moduleStart', 'moduleDone', 'begin', 'done'];
+			for(var i in bindList) {
+				var k = bindList[i];
+				QUnit[k] = bind($report[k], $report);
+			};
+
+			print("Installed QUnit hooks\n")
+		}
+	},
+
+	onScriptLoadError: function(script, e) {
+		print("Error loading script. src=" + script.src + ", error=" + e.getMessage() + ".");
 	},
 
 	onExit: function() {
@@ -36,8 +49,5 @@ Envjs({
 	javaEnabled: false
 });
 
-jQuery.each(['log', 'testStart', 'testDone', 'moduleStart', 'moduleDone', 'begin', 'done'], function(i, v) {
-	QUnit[v] = jQuery.proxy($report[v], $report);
-});
+})();
 
-print("Installed QUnit hooks\n")
