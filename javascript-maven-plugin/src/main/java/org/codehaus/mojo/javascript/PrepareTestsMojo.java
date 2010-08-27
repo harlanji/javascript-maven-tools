@@ -56,7 +56,7 @@ public class PrepareTestsMojo
     /**
      * The output directory of the assembled js file.
      *
-     * @parameter default-value="${basedir}/target/test-scripts"
+     * @parameter default-value="${project.build.testOutputDirectory}"
      */
     protected File outputDirectory;
 

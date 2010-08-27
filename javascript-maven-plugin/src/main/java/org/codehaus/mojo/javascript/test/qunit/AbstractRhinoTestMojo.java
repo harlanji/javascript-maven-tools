@@ -48,10 +48,19 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	 * @parameter expression="${project.build.directory}/surefire-reports"
 	 */
 	File reportsDirectory;
+
+
+    /**
+     * The output directory of the assembled js file.
+     *
+     * @parameter default-value="${project.build.directory}"
+     */
+    protected File targetDirectory;
+
 	/**
 	 * Base directory where jsunit will run.
 	 *
-	 * @parameter expression="${project.build.directory}/test-scripts"
+	 * @parameter expression="${project.build.testOutputDirectory}"
 	 */
 	File suiteDirectory;
 
@@ -100,11 +109,9 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		reportsDirectory.mkdirs();
 
-		File outputDirectory = new File(project.getBuild().getOutputDirectory());
-
 		if(workDirectory == null) {
 			getLog().debug("Creating temp working directory");
-			workDirectory = FileUtils.createTempFile("test", "work", outputDirectory);
+			workDirectory = FileUtils.createTempFile("test", "work", targetDirectory);
 			workDirectory.deleteOnExit();
 		} else if(workDirectory.exists()) {
 			throw new MojoFailureException("workDirectory [" + workDirectory + "] already exists, and it should not.");
