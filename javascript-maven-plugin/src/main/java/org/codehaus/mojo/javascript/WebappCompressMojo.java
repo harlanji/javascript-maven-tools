@@ -32,7 +32,7 @@ import java.io.File;
  * of dependencies.
  *
  * @goal war-compress
- * @phase test
+ * @phase prepare-package
  * @author <a href="mailto:nicolas@apache.org">nicolas De Loof</a>
  */
 public class WebappCompressMojo

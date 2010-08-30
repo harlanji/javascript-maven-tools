@@ -40,9 +40,8 @@
 				<executions>
 					<execution>
 						<goals>
+							<goal>compile</goal>
 							<goal>war-package</goal>
-							<goal>prepare-tests</goal>
-							<goal>qunit-test</goal>
 						</goals>
 					</execution>
 				</executions>

@@ -88,7 +88,7 @@ public class AttachCompressedMojo
     /**
      * The intput directory for the source javascript files.
      * 
-     * @parameter default-value="${project.build.outputDirectory}"
+     * @parameter default-value="${project.build.directory}/scripts"
      */
     private File scriptsDirectory;
 

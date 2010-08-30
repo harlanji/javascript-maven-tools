@@ -1,1 +1,1 @@
-clean test-compile
+clean package

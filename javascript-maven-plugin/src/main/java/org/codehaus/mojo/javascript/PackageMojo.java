@@ -87,7 +87,7 @@ public class PackageMojo
     /**
      * Location of the scripts files.
      * 
-     * @parameter default-value="${project.build.outputDirectory}"
+     * @parameter default-value="${project.build.directory}/scripts"
      */
     private File scriptsDirectory;
 

@@ -40,6 +40,7 @@
 				<executions>
 					<execution>
 						<goals>
+							<goal>compile</goal>
 							<goal>war-package</goal>
 							<goal>war-compress</goal>
 						</goals>

@@ -61,14 +61,14 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	/**
 	 * Base directory where jsunit will run.
 	 *
-	 * @parameter expression="${project.build.testOutputDirectory}"
+	 * @parameter expression="${project.build.directory}/test-scripts"
 	 */
 	File suiteDirectory;
 
     /**
      * The output directory of the assembled js file.
      *
-     * @parameter default-value="${project.build.outputDirectory}"
+     * @parameter default-value="${project.build.directory}/scripts"
      */
     protected File outputDirectory;
 

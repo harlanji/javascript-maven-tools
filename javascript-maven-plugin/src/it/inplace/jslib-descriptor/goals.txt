@@ -1,1 +1,1 @@
-clean javascript:inplace
+clean compile javascript:inplace

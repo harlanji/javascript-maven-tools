@@ -17,12 +17,17 @@ package org.codehaus.mojo.javascript;
  */
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.mojo.javascript.archive.JavascriptArtifactManager;
 import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Compile scripts in a WAR the same way as for a stand-alone javascript project,
@@ -31,11 +36,11 @@ import org.codehaus.plexus.archiver.ArchiverException;
  * 
  * @goal war-package
  * @requiresDependencyResolution runtime
- * @phase compile
+ * @phase prepare-package
  * @author <a href="mailto:nicolas@apache.org">Nicolas De Loof</a>
  */
 public class WarPackageMojo
-    extends CompileSourceMojo
+    extends AbstractJavascriptMojo
 {
 
     /**
@@ -47,16 +52,24 @@ public class WarPackageMojo
     protected File webappDirectory;
 
     /**
+     * The directory where the webapp is built.
+     *
+     * @parameter expression="${project.build.directory}/scripts"
+     * @required
+     */
+    protected File outputDirectory;
+
+    /**
      * The folder in webapp for javascripts
      * 
-     * @parameter expression="${scripts}" default-value="scripts"
+     * @parameter default-value="scripts"
      */
     protected String scriptsDirectory;
 
     /**
      * The folder for javascripts dependencies
      * 
-     * @parameter expression="${scripts}" default-value="lib"
+     * @parameter default-value="lib"
      */
     protected String libsDirectory;
 
@@ -81,16 +94,23 @@ public class WarPackageMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
-        super.outputDirectory = new File( webappDirectory, scriptsDirectory );
-        super.execute();
+        File scriptsDirectory = new File(webappDirectory, this.scriptsDirectory);
+		File libsDirectory = new File(scriptsDirectory, this.libsDirectory);
 
-		// FIXME the following stuff should go inside a separate mojo
-		// that runs in the prepare-package phase (post 2.1).
+		scriptsDirectory.mkdirs();
+		libsDirectory.mkdirs();
 
-        try
-        {
+		
+
+        try{
+			FileUtils.copyDirectoryStructureIfModified(outputDirectory, scriptsDirectory);
+
             javascriptArtifactManager.unpack( project, DefaultArtifact.SCOPE_RUNTIME,
-                new File( webappDirectory, scriptsDirectory + "/" + libsDirectory ), useArtifactId );
+                libsDirectory, useArtifactId );
+        }
+		catch ( IOException e )
+        {
+            throw new MojoExecutionException( "Failed to unpack javascript dependencies", e );
         }
         catch ( ArchiverException e )
         {
