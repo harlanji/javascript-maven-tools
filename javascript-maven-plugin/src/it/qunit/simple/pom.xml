@@ -32,9 +32,6 @@
 	<name>JS Maven Plugin IT: simple</name>
 
 	<build>
-		<outputDirectory>target/scripts</outputDirectory>
-		<testOutputDirectory>target/test-scripts</testOutputDirectory>
-
 		<plugins>
 			<plugin>
 				<groupId>com.devspan.mojo.javascript</groupId>

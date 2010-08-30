@@ -72,6 +72,21 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
      */
     protected File outputDirectory;
 
+
+    /**
+     * The output directory of the assembled js file.
+     *
+     * @parameter default-value="scripts"
+     */
+    protected String scriptsDirectory;
+
+    /**
+     * The output directory of the assembled js file.
+     *
+     * @parameter default-value="lib"
+     */
+    protected String libsDirectory;
+
 	/**
 	 * Base directory where jsunit will run.
 	 *
@@ -123,9 +138,16 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		getLog().debug("Copying source to working directory");
 
+		// TODO this code should be shared with the war package code
+		//		that copies scripts and libs.
+		File scriptsDirectory = new File(workDirectory, this.scriptsDirectory);
+
+
 		// copy scripts to work directory
 		try {
-			FileUtils.copyDirectoryStructure(outputDirectory, workDirectory);
+			scriptsDirectory.mkdirs();
+
+			FileUtils.copyDirectoryStructure(outputDirectory, scriptsDirectory);
 		} catch (IOException ex) {
 			throw new MojoFailureException("Could not create workDirectory from suiteDirectory [" + suiteDirectory + "]");
 		}
@@ -139,22 +161,22 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 			throw new MojoFailureException("Could not create workDirectory from suiteDirectory [" + suiteDirectory + "]");
 		}
 
-		File libDirectory = new File(workDirectory, "lib");
-		libDirectory.mkdirs();
+		File libsDirectory = new File(scriptsDirectory, this.libsDirectory);
+		libsDirectory.mkdirs();
 
 		getLog().debug("Unpacking dependencies");
 
 
 		// unpack test suite dependencies
-		unpackJavascriptDependency("com.devspan.vendor.envjs:envjs-rhino", libDirectory, true);
+		unpackJavascriptDependency("com.devspan.vendor.envjs:envjs-rhino", libsDirectory, true);
 
 		// FIXME this should be in QUnit subclass. need to refactor this stuff so that it
 		// has access to libsDirectory and whatnot first.
-		unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libDirectory, true);
+		unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libsDirectory, true);
 
 		try {
 			// unpack project dependencies
-			javascriptArtifactManager.unpack(project, DefaultArtifact.SCOPE_TEST, libDirectory, true);
+			javascriptArtifactManager.unpack(project, DefaultArtifact.SCOPE_TEST, libsDirectory, true);
 		} catch (ArchiverException ex) {
 			throw new MojoFailureException("Could not unpack dependencies");
 		}
@@ -215,7 +237,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		// Establish window scope with dom and all imported and inline scripts executed
 		//rt.execClasspathScript("env.rhino.js");
-		rt.execScriptFile(new File(workDirectory, "lib/envjs-rhino/env.rhino.js"));
+		// FIXME this is extremely ghetto and should be integrated more with the copying above
+		rt.execScriptFile(new File(workDirectory, scriptsDirectory + "/" + libsDirectory + "/envjs-rhino/env.rhino.js"));
 
 		getLog().debug("Runtime Created");
 

@@ -2,14 +2,22 @@
 
 File workDir = new File( basedir, "target/test-work" );
 
+File scriptsDir = new File( workDir, "scripts" );
+File libsDir = new File( scriptsDir, "lib" );
+
+// test scripts are copied
+assert new File( workDir, "HelloTest.js" ).exists();
+assert new File( workDir, "suite-basic.html" ).exists();
+assert new File( workDir, "numbers/NumbersTest.js" ).exists();
+
 // compiled JS is copied
-assert new File( workDir, "Hello.js" ).exists();
-assert new File( workDir, "numbers/One.js" ).exists();
-assert new File( workDir, "numbers/Two.js" ).exists();
+assert new File( scriptsDir, "Hello.js" ).exists();
+assert new File( scriptsDir, "numbers/One.js" ).exists();
+assert new File( scriptsDir, "numbers/Two.js" ).exists();
 
 // needed libraries are extracted
-assert new File( workDir, "lib/qunit/qunit.js" ).exists();
-assert new File( workDir, "lib/envjs-rhino/env.rhino.js" ).exists();
+assert new File( libsDir, "qunit/qunit.js" ).exists();
+assert new File( libsDir, "envjs-rhino/env.rhino.js" ).exists();
 
 
 // reports are generated
