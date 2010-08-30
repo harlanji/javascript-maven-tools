@@ -35,7 +35,7 @@ import org.codehaus.plexus.util.FileUtils;
  * a dedicated scripts output directory.
  * 
  * @goal war-package
- * @requiresDependencyResolution runtime
+ * @requiresDependencyResolution test
  * @phase prepare-package
  * @author <a href="mailto:nicolas@apache.org">Nicolas De Loof</a>
  */
@@ -60,6 +60,14 @@ public class WarPackageMojo
     protected File outputDirectory;
 
     /**
+     * The directory where the webapp is built.
+     *
+     * @parameter expression="${project.build.directory}/test-scripts"
+     * @required
+     */
+    protected File testOutputDirectory;
+
+    /**
      * The folder in webapp for javascripts
      * 
      * @parameter default-value="scripts"
@@ -80,10 +88,18 @@ public class WarPackageMojo
      */
     protected boolean useArtifactId;
 
+
     /**
-     * @component 
+     * Attach tests. Typically this would be useful for integration testing.
+	 * The are currently attached to the root.
+	 *
+	 * TODO attach elsewhere and automatically include a base tag or use
+	 * expand a property or something.
+     *
+     * @parameter default-value="false"
      */
-    protected JavascriptArtifactManager javascriptArtifactManager;
+	protected boolean attachTests;
+
 
     /**
 	 * Set the output directory to webappDirectory/scriptsDirectory and then
@@ -96,16 +112,29 @@ public class WarPackageMojo
     {
         File scriptsDirectory = new File(webappDirectory, this.scriptsDirectory);
 		File libsDirectory = new File(scriptsDirectory, this.libsDirectory);
+		// TODO see note on attachTests
+		File testsDirectory = webappDirectory;
 
 		scriptsDirectory.mkdirs();
 		libsDirectory.mkdirs();
-
+		testsDirectory.mkdirs();
 		
 
         try{
 			FileUtils.copyDirectoryStructureIfModified(outputDirectory, scriptsDirectory);
 
-            javascriptArtifactManager.unpack( project, DefaultArtifact.SCOPE_RUNTIME,
+			String scope = DefaultArtifact.SCOPE_RUNTIME;
+            
+			if(attachTests) {
+				scope = DefaultArtifact.SCOPE_TEST;
+				FileUtils.copyDirectoryStructureIfModified(testOutputDirectory, testsDirectory);
+
+				// FIXME should we require qunit to be a test scope dependency
+				// of each project, so they can choose the version?
+				unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libsDirectory, true);
+			}
+
+			javascriptArtifactManager.unpack( project, scope,
                 libsDirectory, useArtifactId );
         }
 		catch ( IOException e )
