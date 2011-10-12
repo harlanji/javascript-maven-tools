@@ -45,7 +45,7 @@
   </licenses>    
 
   <modules>
-	<module>javascript-project</module>
+	
 	<module>javascript-compressor</module>
     <module>javascript-maven-archive</module>
     <module>javascript-maven-plugin</module>
