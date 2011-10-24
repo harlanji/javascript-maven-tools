@@ -39,8 +39,12 @@ public class QUnitTestMojo extends AbstractRhinoTestMojo {
 		// have been loaded when the first test starts.
 		//rt.execScriptFile(new File(workDirectory, "lib/qunit/qunit.js"));
 
+    rt.execClasspathScript("qunit.js");
 		rt.execClasspathScript("qunit-runner.js");
 
+    getLog().info("Qunit - Running suite: "+suite.getName());
+
+   
 		// HACK
 		String code = "window.location = \"" + suite.getAbsolutePath() + "\";";
 		rt.exec( code, suite.getAbsolutePath());

@@ -21,7 +21,7 @@ assert new File( libsDir, "envjs-rhino/env.rhino.js" ).exists();
 
 
 // reports are generated
-File reportDir = new File( basedir, "target/surefire-reports");
+File reportDir = new File( basedir, "target/surefire");
 assert reportDir.exists();
 assert new File( reportDir, "qunit.txt" ).exists();
 assert new File( reportDir, "TEST-qunit.xml" ).exists();

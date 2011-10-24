@@ -36,6 +36,7 @@ import org.apache.maven.surefire.report.FileReporter;
 import org.apache.maven.surefire.report.ReportEntry;
 import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterManager;
+import org.apache.maven.surefire.report.RunStatistics;
 import org.apache.maven.surefire.testset.AbstractTestSet;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;
@@ -71,7 +72,7 @@ public class JsUnitMojo
     /**
      * Base directory where all reports are written to.
      * 
-     * @parameter expression="${project.build.directory}/surefire-reports"
+     * @parameter expression="${project.build.directory}/surefire"
      */
     private File reportsDirectory;
 
@@ -204,8 +205,10 @@ public class JsUnitMojo
     {
         setupServer( server );
 
+        RunStatistics runStats = new RunStatistics();
+        
         Reporter reporter = new FileReporter( reportsDirectory, Boolean.FALSE );
-        ReporterManager reportManager = new ReporterManager( Collections.singletonList( reporter ) );
+        ReporterManager reportManager = new ReporterManager( Collections.singletonList( reporter ), runStats );
         ReportEntry report = new ReportEntry( this, "jsunit", "test Starting" );
         reportManager.testSetStarting( report );
 
@@ -230,7 +233,7 @@ public class JsUnitMojo
 
         report = new ReportEntry( this, "jsunit", "test Completed" );
         reportManager.testSetCompleted( report );
-        checkFailure( reportManager );
+        checkFailure( runStats );
     }
 
     /**
@@ -294,10 +297,10 @@ public class JsUnitMojo
         return tests;
     }
 
-    private void checkFailure( ReporterManager reportManager )
+    private void checkFailure( RunStatistics runStats )
         throws MojoFailureException
     {
-        if ( reportManager.getNumErrors() + reportManager.getNumFailures() > 0 )
+        if ( runStats.hadErrors() || runStats.hadFailures() )
         {
             String msg =
                 "There are test failures.\n\nPlease refer to " + reportsDirectory

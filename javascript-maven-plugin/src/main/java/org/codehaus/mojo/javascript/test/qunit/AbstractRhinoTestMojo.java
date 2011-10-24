@@ -16,6 +16,7 @@ import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.surefire.report.FileReporter;
 import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterManager;
+import org.apache.maven.surefire.report.RunStatistics;
 import org.apache.maven.surefire.report.XMLReporter;
 import org.codehaus.mojo.javascript.AbstractJavascriptMojo;
 import org.codehaus.mojo.javascript.archive.Types;
@@ -46,7 +47,7 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 	/**
 	 * Base directory where all reports are written to.
 	 *
-	 * @parameter expression="${project.build.directory}/surefire-reports"
+	 * @parameter expression="${project.build.directory}/surefire"
 	 */
 	File reportsDirectory;
 
@@ -166,14 +167,6 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 		getLog().debug("Unpacking dependencies");
 
-
-		// unpack test suite dependencies
-		unpackJavascriptDependency("com.devspan.vendor.envjs:envjs-rhino", libsDirectory, true);
-
-		// FIXME this should be in QUnit subclass. need to refactor this stuff so that it
-		// has access to libsDirectory and whatnot first.
-		unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libsDirectory, true);
-
 		try {
 			// unpack project dependencies
 			javascriptArtifactManager.unpack(project, DefaultArtifact.SCOPE_TEST, libsDirectory, true);
@@ -185,13 +178,14 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		for (String suiteName : suites) {
 			getLog().info("Running suite: " + suiteName);
 			File suite = new File(workDirectory, suiteName);
-
+      
+      RunStatistics runStats = new RunStatistics();
 
 			ReporterManager reporterManager = new ReporterManager(
 					Arrays.asList(new Reporter[]{
 						new FileReporter(reportsDirectory, Boolean.FALSE),
 						new XMLReporter(reportsDirectory, Boolean.FALSE)
-					}));
+					}), runStats);
 
 			ReportCallbacks reportCb = new ReportCallbacks(reporterManager, getLog());
 
@@ -212,7 +206,7 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 			getLog().debug("Finished suite: " + suiteName);
 
-			checkFailure(reporterManager);
+			checkFailure(runStats);
 		}
 
 		getLog().debug("Finished running all tests.");
@@ -239,7 +233,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		//rt.execClasspathScript("env.rhino.js");
 		// FIXME this is extremely ghetto and should be integrated more with the copying above
 		rt.execScriptFile(new File(workDirectory, scriptsDirectory + "/" + libsDirectory + "/envjs-rhino/env.rhino.js"));
-
+    rt.execClasspathScript("env.rhino.js");
+    
 		getLog().debug("Runtime Created");
 
 		return rt;
@@ -265,9 +260,9 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 		return tests;
 	}
 
-	private void checkFailure(ReporterManager reportManager)
+	private void checkFailure(RunStatistics runStats)
 			throws MojoFailureException {
-		if (reportManager.getNumErrors() + reportManager.getNumFailures() > 0) {
+		if (runStats.hadErrors() || runStats.hadFailures()) {
 			String msg =
 					"There are test failures.\n\nPlease refer to " + reportsDirectory
 					+ " for the individual test results.";
