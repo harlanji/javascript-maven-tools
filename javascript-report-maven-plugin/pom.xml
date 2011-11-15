@@ -119,7 +119,7 @@
     <dependency>
       <groupId>rhino</groupId>
       <artifactId>js</artifactId>
-      <version>1.6R7</version>
+      <version>1.7R2</version>
     </dependency>
 
     <!-- Dependency set as "jar" and not "javascript" as this requires

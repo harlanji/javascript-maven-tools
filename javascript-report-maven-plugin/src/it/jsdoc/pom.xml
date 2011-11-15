@@ -28,21 +28,29 @@
   <artifactId>jsdoc</artifactId>
   <version>0.99</version>
 
-  <reporting>
+  <build>
     <plugins>
       <plugin>
-        <groupId>com.devspan.mojo.javascript</groupId>
-        <artifactId>javascript-report-maven-plugin</artifactId>
-        <version>@pom.version@</version>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.0</version>
         <configuration>
-          <reports>
-            <report>jsdoc</report>
-          </reports>
-		</configuration>
-      </plugin>
+          <reportPlugins>
+            <plugin>
+              <groupId>com.devspan.mojo.javascript</groupId>
+              <artifactId>javascript-report-maven-plugin</artifactId>
+              <version>@pom.version@</version>
+              <configuration>
+                <reports>
+                  <report>jsdoc</report>
+                </reports>
+              </configuration>
+            </plugin>
+          </reportPlugins>
+        </configuration>
+       </plugin>
+      
     </plugins>
-  </reporting>
-  
-  
+  </build>
+
 
 </project>
