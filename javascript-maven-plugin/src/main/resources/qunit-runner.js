@@ -3,13 +3,40 @@
 (function() {
 
 
-function bind(fn, context) {
-	return function() {
-		fn.apply(context, arguments);
-	};
-};
 
 
+
+// bind QUnit events to the special $report object. its interface is
+// modeled after QUnit. other test frameworks need to make an adapter.
+
+QUnit.log = function(args) {
+  $report.log(args.result, args.message);
+}
+
+QUnit.testStart = function(args) {
+  $report.testStart(args.name);
+}
+
+QUnit.testDone = function(args) {
+  $report.testDone(args.name, args.failed, args.total);
+}
+
+QUnit.moduleStart = function(args) {
+  $report.moduleStart(args.name);
+}
+
+QUnit.moduleDone = function(args) {
+  $report.moduleDone(args.name, args.failed, args.total);
+}
+
+QUnit.begin = function(args) {
+  $report.begin();
+}
+
+QUnit.done = function(args) {
+  $report.done(args.failed, args.total);
+}
+      
 Envjs({
 	scriptTypes : {
 		'text/javascript' : true,
@@ -22,19 +49,9 @@ Envjs({
 	},
 
 	afterScriptLoad: {
-		'qunit[\-\d|\.js]': function(scriptNode) {
-
-			// bind QUnit events to the special $report object. its interface is
-			// modeled after QUnit. other test frameworks need to make an adapter.
-
-			var bindList = ['log', 'testStart', 'testDone', 'moduleStart', 'moduleDone', 'begin', 'done'];
-			for(var i in bindList) {
-				var k = bindList[i];
-				QUnit[k] = bind($report[k], $report);
-			};
-
-			print("Installed QUnit hooks\n")
-		}
+    '.*': function(scriptNode) {
+      Envjs.log('loaded script: '+scriptNode.src);
+    }
 	},
 
 	onScriptLoadError: function(script, e) {

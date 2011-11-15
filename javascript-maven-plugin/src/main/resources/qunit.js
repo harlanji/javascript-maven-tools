@@ -1,13 +1,11 @@
 /**
- * QUnit 1.2.0pre - A JavaScript Unit Testing Framework
+ * QUnit 1.0.0 - A JavaScript Unit Testing Framework
  *
  * http://docs.jquery.com/QUnit
  *
- * Copyright (c) 2011 John Resig, J�rn Zaefferer
+ * Copyright (c) 2011 John Resig, J√∂rn Zaefferer
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * or GPL (GPL-LICENSE.txt) licenses.
- * Pulled Live from Git Mon Oct 24 09:15:01 UTC 2011
- * Last Commit: ee156923cdb01820e35e6bb579d5cf6bf55736d4
  */
 
 (function(window) {
@@ -23,9 +21,7 @@ var defined = {
 	})()
 };
 
-var	testId = 0,
-	toString = Object.prototype.toString,
-	hasOwn = Object.prototype.hasOwnProperty;
+var testId = 0;
 
 var Test = function(name, testName, expected, testEnvironmentArg, async, callback) {
 	this.name = name;
@@ -95,7 +91,6 @@ Test.prototype = {
 		}
 	},
 	run: function() {
-		config.current = this;
 		if ( this.async ) {
 			QUnit.stop();
 		}
@@ -114,12 +109,11 @@ Test.prototype = {
 
 			// Restart the tests if they're blocking
 			if ( config.blocking ) {
-				QUnit.start();
+				start();
 			}
 		}
 	},
 	teardown: function() {
-		config.current = this;
 		try {
 			this.testEnvironment.teardown.call(this.testEnvironment);
 			checkPollution();
@@ -128,8 +122,7 @@ Test.prototype = {
 		}
 	},
 	finish: function() {
-		config.current = this;
-		if ( this.expected != null && this.expected != this.assertions.length ) {
+		if ( this.expected && this.expected != this.assertions.length ) {
 			QUnit.ok( false, "Expected " + this.expected + " assertions, but " + this.assertions.length + " were run" );
 		}
 
@@ -252,7 +245,7 @@ Test.prototype = {
 		if (bad) {
 			run();
 		} else {
-			synchronize(run, true);
+			synchronize(run);
 		};
 	}
 
@@ -269,7 +262,7 @@ var QUnit = {
 	asyncTest: function(testName, expected, callback) {
 		if ( arguments.length === 2 ) {
 			callback = expected;
-			expected = null;
+			expected = 0;
 		}
 
 		QUnit.test(testName, expected, callback, true);
@@ -417,11 +410,11 @@ var QUnit = {
 				}
 
 				config.blocking = false;
-				process(true);
+				process();
 			}, 13);
 		} else {
 			config.blocking = false;
-			process(true);
+			process();
 		}
 	},
 
@@ -614,7 +607,8 @@ extend(QUnit, {
 				return "null";
 		}
 
-		var type = toString.call( obj ).match(/^\[object\s(.*)\]$/)[1] || '';
+		var type = Object.prototype.toString.call( obj )
+			.match(/^\[object\s(.*)\]$/)[1] || '';
 
 		switch (type) {
 				case 'Number':
@@ -676,9 +670,6 @@ extend(QUnit, {
 		var querystring = "?",
 			key;
 		for ( key in params ) {
-			if ( !hasOwn.call( params, key ) ) {
-				continue;
-			}
 			querystring += encodeURIComponent( key ) + "=" +
 				encodeURIComponent( params[ key ] ) + "&";
 		}
@@ -791,17 +782,6 @@ QUnit.load = function() {
 
 addEvent(window, "load", QUnit.load);
 
-// addEvent(window, "error") gives us a useless event object
-window.onerror = function( message, file, line ) {
-	if ( QUnit.config.current ) {
-		ok( false, message + ", " + file + ":" + line );
-	} else {
-		test( "global failure", function() {
-			ok( false, message + ", " + file + ":" + line );
-		});
-	}
-};
-
 function done() {
 	config.autorun = true;
 
@@ -841,7 +821,7 @@ function done() {
 	}
 
 	if ( config.altertitle && typeof document !== "undefined" && document.title ) {
-		// show ? for good, ? for bad suite result in title
+		// show ‚úñ for good, ‚úî for bad suite result in title
 		// use escape sequences in case file gets loaded with non-utf-8-charset
 		document.title = [
 			(config.stats.bad ? "\u2716" : "\u2714"),
@@ -916,30 +896,26 @@ function escapeInnerText(s) {
 	});
 }
 
-function synchronize( callback, last ) {
+function synchronize( callback ) {
 	config.queue.push( callback );
 
 	if ( config.autorun && !config.blocking ) {
-		process(last);
+		process();
 	}
 }
 
-function process( last ) {
-	var start = new Date().getTime();
-	config.depth = config.depth ? config.depth + 1 : 1;
+function process() {
+	var start = (new Date()).getTime();
 
 	while ( config.queue.length && !config.blocking ) {
-		if ( !defined.setTimeout || config.updateRate <= 0 || ( ( new Date().getTime() - start ) < config.updateRate ) ) {
+		if ( config.updateRate <= 0 || (((new Date()).getTime() - start) < config.updateRate) ) {
 			config.queue.shift()();
 		} else {
-			window.setTimeout( function(){
-				process( last );
-			}, 13 );
+			window.setTimeout( process, 13 );
 			break;
 		}
 	}
-	config.depth--;
-	if ( last && !config.blocking && !config.queue.length && config.depth === 0 ) {
+	if (!config.blocking && !config.queue.length) {
 		done();
 	}
 }
@@ -949,9 +925,6 @@ function saveGlobal() {
 
 	if ( config.noglobals ) {
 		for ( var key in window ) {
-			if ( !hasOwn.call( window, key ) ) {
-				continue;
-			}
 			config.pollution.push( key );
 		}
 	}
@@ -1002,9 +975,7 @@ function extend(a, b) {
 	for ( var prop in b ) {
 		if ( b[prop] === undefined ) {
 			delete a[prop];
-
-		// Avoid "Member not found" error in IE8 caused by setting window.constructor
-		} else if ( prop !== "constructor" || a !== window ) {
+		} else {
 			a[prop] = b[prop];
 		}
 	}
@@ -1048,7 +1019,7 @@ function runLoggingCallbacks(key, scope, args) {
 }
 
 // Test for equality any JavaScript type.
-// Author: Philippe Rath� <prathe@gmail.com>
+// Author: Philippe Rath√© <prathe@gmail.com>
 QUnit.equiv = function () {
 
 	var innerEquiv; // the real equiv function
@@ -1297,12 +1268,7 @@ QUnit.jsDump = (function() {
 				type = "document";
 			} else if (obj.nodeType) {
 				type = "node";
-			} else if (
-				// native arrays
-				toString.call( obj ) === "[object Array]" ||
-				// NodeList objects
-				( typeof obj.length === "number" && typeof obj.item !== "undefined" && ( obj.length ? obj.item(0) === obj[0] : ( obj.item( 0 ) === null && typeof obj[0] === "undefined" ) ) )
-			) {
+			} else if (typeof obj === "object" && typeof obj.length === "number" && obj.length >= 0) {
 				type = "array";
 			} else {
 				type = typeof obj;
@@ -1484,9 +1450,6 @@ QUnit.diff = (function() {
 		}
 
 		for (var i in ns) {
-			if ( !hasOwn.call( ns, i ) ) {
-				continue;
-			}
 			if (ns[i].rows.length == 1 && typeof(os[i]) != "undefined" && os[i].rows.length == 1) {
 				n[ns[i].rows[0]] = {
 					text: n[ns[i].rows[0]],

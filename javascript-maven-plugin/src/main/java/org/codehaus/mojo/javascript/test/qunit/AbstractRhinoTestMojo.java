@@ -1,26 +1,24 @@
 package org.codehaus.mojo.javascript.test.qunit;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.AbstractMojo;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.*;
 import java.util.*;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.surefire.report.FileReporter;
 import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterManager;
 import org.apache.maven.surefire.report.RunStatistics;
 import org.apache.maven.surefire.report.XMLReporter;
 import org.codehaus.mojo.javascript.AbstractJavascriptMojo;
-import org.codehaus.mojo.javascript.archive.Types;
 import org.codehaus.plexus.util.FileUtils;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.shell.Global;
 
 
 /**
@@ -189,20 +187,13 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 			ReportCallbacks reportCb = new ReportCallbacks(reporterManager, getLog());
 
-			final RhinoRuntime rt;
-			try {
-				rt = createRhinoRuntime(reportCb);
-			} catch(Exception e) {
-				throw new MojoExecutionException("Could not create the Rhino runtime.", e);
-			}
+
 
 			try {
-				runSuite(rt, suite);
+				runSuite(suite, reportCb);
 			} catch(Exception e) {
 				throw new MojoExecutionException("Error running test suite '"+suite.getAbsolutePath()+"'.", e);
 			}
-
-			rt.close();
 
 			getLog().debug("Finished suite: " + suiteName);
 
@@ -213,34 +204,8 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 
 	}
 
-	/**
-	 * Creates a RhinoRuntime with env.js and inserts a $report object that
-	 * collects test results as they are run. 
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	protected RhinoRuntime createRhinoRuntime(ReportCallbacks reportCb) throws Exception {
-		getLog().debug("Creating Rhino Runtime");
 
-		RhinoRuntime rt = new RhinoRuntime();
-
-		// Put our reporting callbacks in there
-		rt.putGlobal("$report", reportCb);
-
-
-		// Establish window scope with dom and all imported and inline scripts executed
-		//rt.execClasspathScript("env.rhino.js");
-		// FIXME this is extremely ghetto and should be integrated more with the copying above
-		rt.execScriptFile(new File(workDirectory, scriptsDirectory + "/" + libsDirectory + "/envjs-rhino/env.rhino.js"));
-    rt.execClasspathScript("env.rhino.js");
-    
-		getLog().debug("Runtime Created");
-
-		return rt;
-	}
-
-	protected abstract void runSuite(RhinoRuntime rt, File suite) throws Exception;
+	protected abstract void runSuite(File suite, ReportCallbacks reportCb) throws Exception;
 
 	private String[] getTestsToRun() {
 		if (!suiteDirectory.exists()) {
@@ -273,4 +238,66 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 			}
 		}
 	}
+  
+  
+    protected class RhinoTemplate
+    {
+        public Object evalScript( Map context, String[] args, RhinoCallBack callback )
+            throws Exception
+        {
+
+            // Creates and enters a Context. The Context stores information
+            // about the execution environment of a script.
+            Context ctx = Context.enter();
+            ctx.setLanguageVersion( getLanguageVersion() );
+            ctx.setOptimizationLevel(-1);
+            ctx.initStandardObjects();
+            try
+            {
+                // Initialize the standard objects (Object, Function, etc.)
+                // This must be done before scripts can be executed. Returns
+                // a scope object that we use in later calls.
+
+                // Use a "Golbal" scope to allow use of importClass in scripts
+                Global scope = new Global();
+                scope.init( ctx );
+
+                if ( context != null )
+                {
+                    for ( Iterator iterator = context.entrySet().iterator(); iterator.hasNext(); )
+                    {
+                        Map.Entry entry = (Map.Entry) iterator.next();
+                        Scriptable jsObject = Context.toObject( entry.getValue(), scope );
+                        String key = (String) entry.getKey();
+                        getLog().debug(
+                            "set object available to javascript " + key + "=" + jsObject );
+                        scope.put( key, scope, jsObject );
+                    }
+                }
+                if ( args != null )
+                {
+                    scope.defineProperty( "arguments", args, ScriptableObject.DONTENUM );
+                }
+                return callback.doWithContext( ctx, scope );
+            }
+            finally
+            {
+                Context.exit();
+            }
+        }
+
+    }
+
+    protected interface RhinoCallBack
+    {
+        Object doWithContext( Context ctx, Scriptable scope )
+            throws IOException;
+    }
+    
+    
+    protected int getLanguageVersion()
+    {
+        return Context.VERSION_1_6;
+    }
+  
 }

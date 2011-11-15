@@ -35,6 +35,10 @@
   <description>
       A set of tools to bring maven support to JavaScript developpers.
   </description>
+  
+  <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
     
   <licenses>
     <license>

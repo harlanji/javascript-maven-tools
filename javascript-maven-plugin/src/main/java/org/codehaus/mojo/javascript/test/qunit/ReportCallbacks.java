@@ -49,7 +49,7 @@ public class ReportCallbacks {
 		}
 	}
 
-	public void moduleStart(String name, Object testEnvironment) {
+	public void moduleStart(String name) {
 		currentModule = name;
 
 		log.debug("QUnit - Starting Module: " + name);
@@ -61,7 +61,7 @@ public class ReportCallbacks {
 		log.debug("QUnit - Finished Module: " + name);
 	}
 
-	public void testStart(String name, Object testEnvironment) {
+	public void testStart(String name) {
 		currentTest = name;
 
 		ReportEntry entry = new ReportEntry(this, getTestName(), "Test Started");

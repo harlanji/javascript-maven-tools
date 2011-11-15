@@ -16,8 +16,8 @@ assert new File( scriptsDir, "numbers/One.js" ).exists();
 assert new File( scriptsDir, "numbers/Two.js" ).exists();
 
 // needed libraries are extracted
-assert new File( libsDir, "qunit/qunit.js" ).exists();
-assert new File( libsDir, "envjs-rhino/env.rhino.js" ).exists();
+//assert new File( libsDir, "qunit/qunit.js" ).exists();
+//assert new File( libsDir, "envjs-rhino/env.rhino.js" ).exists();
 
 
 // reports are generated

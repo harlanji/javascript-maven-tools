@@ -6636,7 +6636,7 @@ __extend__(HTMLDocument.prototype, {
         case "PARAM":
             node = new HTMLParamElement(this);break;
         case "PRE":
-            node = new HTMLPreElement(this);break;
+            node = new HTMLSpanElement(this);break;
         case "SCRIPT":
             node = new HTMLScriptElement(this);break;
         case "SELECT":

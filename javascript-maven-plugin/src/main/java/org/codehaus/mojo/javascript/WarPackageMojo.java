@@ -128,10 +128,6 @@ public class WarPackageMojo
 			if(attachTests) {
 				scope = DefaultArtifact.SCOPE_TEST;
 				FileUtils.copyDirectoryStructureIfModified(testOutputDirectory, testsDirectory);
-
-				// FIXME should we require qunit to be a test scope dependency
-				// of each project, so they can choose the version?
-				unpackJavascriptDependency("com.devspan.vendor.jquery:qunit", libsDirectory, true);
 			}
 
 			javascriptArtifactManager.unpack( project, scope,
