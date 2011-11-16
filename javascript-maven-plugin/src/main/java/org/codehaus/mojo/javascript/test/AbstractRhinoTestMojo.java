@@ -1,4 +1,4 @@
-package org.codehaus.mojo.javascript.test.qunit;
+package org.codehaus.mojo.javascript.test;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -8,6 +8,7 @@ import org.codehaus.plexus.util.DirectoryScanner;
 import java.io.*;
 import java.util.*;
 import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.surefire.report.FileReporter;
 import org.apache.maven.surefire.report.Reporter;
 import org.apache.maven.surefire.report.ReporterManager;
@@ -238,61 +239,6 @@ public abstract class AbstractRhinoTestMojo extends AbstractJavascriptMojo {
 			}
 		}
 	}
-  
-  
-    protected class RhinoTemplate
-    {
-        public Object evalScript( Map context, String[] args, RhinoCallBack callback )
-            throws Exception
-        {
-
-            // Creates and enters a Context. The Context stores information
-            // about the execution environment of a script.
-            Context ctx = Context.enter();
-            ctx.setLanguageVersion( getLanguageVersion() );
-            ctx.setOptimizationLevel(-1);
-            ctx.initStandardObjects();
-            try
-            {
-                // Initialize the standard objects (Object, Function, etc.)
-                // This must be done before scripts can be executed. Returns
-                // a scope object that we use in later calls.
-
-                // Use a "Golbal" scope to allow use of importClass in scripts
-                Global scope = new Global();
-                scope.init( ctx );
-
-                if ( context != null )
-                {
-                    for ( Iterator iterator = context.entrySet().iterator(); iterator.hasNext(); )
-                    {
-                        Map.Entry entry = (Map.Entry) iterator.next();
-                        Scriptable jsObject = Context.toObject( entry.getValue(), scope );
-                        String key = (String) entry.getKey();
-                        getLog().debug(
-                            "set object available to javascript " + key + "=" + jsObject );
-                        scope.put( key, scope, jsObject );
-                    }
-                }
-                if ( args != null )
-                {
-                    scope.defineProperty( "arguments", args, ScriptableObject.DONTENUM );
-                }
-                return callback.doWithContext( ctx, scope );
-            }
-            finally
-            {
-                Context.exit();
-            }
-        }
-
-    }
-
-    protected interface RhinoCallBack
-    {
-        Object doWithContext( Context ctx, Scriptable scope )
-            throws IOException;
-    }
     
     
     protected int getLanguageVersion()

@@ -1,4 +1,4 @@
-package org.codehaus.mojo.javascript.test.qunit;
+package org.codehaus.mojo.javascript.test;
 
 import java.util.Collection;
 import java.util.Collections;

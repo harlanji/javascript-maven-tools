@@ -17,6 +17,10 @@
 
 package org.codehaus.mojo.javascript.test.qunit;
 
+import org.codehaus.mojo.javascript.test.RhinoTemplate;
+import org.codehaus.mojo.javascript.test.RhinoCallBack;
+import org.codehaus.mojo.javascript.test.ReportCallbacks;
+import org.codehaus.mojo.javascript.test.AbstractRhinoTestMojo;
 import com.sun.imageio.plugins.common.ReaderUtil;
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +47,7 @@ public class QUnitTestMojo extends AbstractRhinoTestMojo {
 	protected void runSuite(final File suite, final ReportCallbacks reportCb) throws Exception {
     
     
-		RhinoTemplate rt = new RhinoTemplate();
+		RhinoTemplate rt = new RhinoTemplate(getLanguageVersion(), getLog());
     
     Map<String, Object> context = new HashMap<String, Object>();
 
